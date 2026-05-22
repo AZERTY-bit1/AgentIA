@@ -1,982 +1,915 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AirPods Pro — Son d'exception</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AirPods Pro — Expérience Sonore</title>
+
+  <!-- Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
     :root {
-      --white: #f5f5f7;
-      --gray: #1d1d1f;
-      --blue: #2997ff;
-      --purple: #bf5af2;
+      --black: #1d1d1f;
+      --gray: #6e6e73;
+      --light: #f5f5f7;
+      --white: #ffffff;
+      --blue: #0071e3;
+      --blue-light: #147ce5;
     }
-
     html { scroll-behavior: smooth; }
-
     body {
-      background: #000;
-      color: var(--white);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #fff;
+      color: var(--black);
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
       overflow-x: hidden;
     }
 
     /* NAV */
     nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      background: rgba(0,0,0,0.75);
-      backdrop-filter: blur(20px);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 18px 40px;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 48px; height: 52px;
     }
-    nav .logo {
-      font-size: 1.4rem;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      background: linear-gradient(135deg, var(--blue), var(--purple));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .nav-logo { font-size: 1.4rem; font-weight: 700; color: var(--black); }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a { font-size: 0.82rem; color: var(--gray); text-decoration: none; transition: color .2s; }
+    .nav-links a:hover { color: var(--black); }
+    .nav-cta {
+      background: var(--blue); color: #fff; font-size: 0.82rem; font-weight: 600;
+      padding: 8px 18px; border-radius: 20px; text-decoration: none; transition: background .2s;
     }
-    nav ul { list-style: none; display: flex; gap: 30px; }
-    nav ul a {
-      color: rgba(255,255,255,0.7);
-      text-decoration: none;
-      font-size: 0.9rem;
-      transition: color 0.3s;
-    }
-    nav ul a:hover { color: #fff; }
+    .nav-cta:hover { background: var(--blue-light); }
 
     /* HERO */
     .hero {
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 100px 20px 60px;
-      position: relative;
-      overflow: hidden;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 100px 24px 60px; position: relative; overflow: hidden;
+      background: linear-gradient(180deg, #ffffff 0%, #f5f5f7 100%);
+    }
+    .hero-eyebrow {
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--blue); margin-bottom: 18px; opacity: 0;
+    }
+    .hero-title {
+      font-size: clamp(3.5rem, 11vw, 8rem); font-weight: 800;
+      letter-spacing: -3px; line-height: 0.95; color: var(--black);
+      margin-bottom: 24px; opacity: 0;
+    }
+    .hero-title span { color: var(--blue); }
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.3rem); color: var(--gray);
+      max-width: 520px; line-height: 1.6; margin-bottom: 44px; opacity: 0;
+    }
+    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; opacity: 0; }
+    .btn-blue {
+      background: var(--blue); color: #fff; padding: 16px 36px; border-radius: 50px;
+      font-weight: 600; font-size: 1rem; text-decoration: none;
+      transition: all .3s; box-shadow: 0 4px 20px rgba(0,113,227,.3);
+    }
+    .btn-blue:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,113,227,.4); }
+    .btn-outline {
+      background: transparent; color: var(--blue); padding: 16px 36px; border-radius: 50px;
+      font-weight: 600; font-size: 1rem; text-decoration: none;
+      border: 1.5px solid var(--blue); transition: all .3s;
+    }
+    .btn-outline:hover { background: rgba(0,113,227,.05); transform: translateY(-2px); }
+
+    /* CANVAS HERO */
+    #canvas-container {
+      width: 100%; max-width: 700px; height: 500px;
+      margin: 0 auto; position: relative; opacity: 0;
+    }
+    #canvas-container canvas { width: 100% !important; height: 100% !important; }
+
+    .scroll-hint {
+      margin-top: 40px; font-size: 0.75rem; color: var(--gray);
+      letter-spacing: 2px; text-transform: uppercase; opacity: 0;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+    }
+    .scroll-line {
+      width: 1px; height: 40px;
+      background: linear-gradient(to bottom, var(--gray), transparent);
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+    @keyframes scrollLine {
+      0%, 100% { transform: scaleY(1); opacity: 1; }
+      50% { transform: scaleY(0.3); opacity: 0.3; }
     }
 
-    .hero-bg {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at 50% 60%, rgba(41,151,255,0.15) 0%, transparent 70%),
-                  radial-gradient(ellipse at 80% 20%, rgba(191,90,242,0.1) 0%, transparent 50%);
+    /* SECTION BASE */
+    .section-label {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 4px; text-transform: uppercase;
+      color: var(--blue); margin-bottom: 14px;
     }
+    .section-title {
+      font-size: clamp(2.2rem, 5vw, 3.8rem); font-weight: 800;
+      letter-spacing: -1.5px; line-height: 1.05; color: var(--black);
+    }
+    .section-title em { font-style: normal; color: var(--blue); }
 
-    .hero-tag {
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--blue);
-      margin-bottom: 20px;
-      animation: fadeUp 1s ease both;
+    /* FEATURES DARK */
+    .features-section {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+      background: var(--black); color: #fff;
     }
+    .features-sticky {
+      position: sticky; top: 52px; height: calc(100vh - 52px); overflow: hidden;
+    }
+    #canvas-features { display: block; width: 100%; height: 100%; }
 
-    .hero h1 {
-      font-size: clamp(3rem, 10vw, 7rem);
-      font-weight: 800;
-      line-height: 1;
-      letter-spacing: -3px;
-      margin-bottom: 20px;
-      animation: fadeUp 1s 0.2s ease both;
+    .features-scroll { padding: 80px 60px; }
+    .feature-item {
+      min-height: 60vh; display: flex; flex-direction: column; justify-content: center;
+      padding: 60px 0; border-bottom: 1px solid rgba(255,255,255,0.07);
+      opacity: 0; transform: translateX(40px);
     }
-
-    .hero p {
-      font-size: 1.2rem;
-      color: rgba(255,255,255,0.6);
-      max-width: 500px;
-      margin-bottom: 40px;
-      line-height: 1.6;
-      animation: fadeUp 1s 0.4s ease both;
+    .feature-item:last-child { border-bottom: none; }
+    .feature-num {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 3px;
+      color: rgba(255,255,255,0.3); margin-bottom: 16px; text-transform: uppercase;
     }
-
-    .hero-btns {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-      justify-content: center;
-      animation: fadeUp 1s 0.6s ease both;
+    .feature-item h3 {
+      font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 800;
+      letter-spacing: -1px; line-height: 1.05; margin-bottom: 18px;
     }
-
-    .btn-primary {
-      background: var(--blue);
-      color: #fff;
-      padding: 14px 32px;
-      border-radius: 50px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.95rem;
-      transition: all 0.3s;
-      box-shadow: 0 0 30px rgba(41,151,255,0.4);
-    }
-    .btn-primary:hover {
-      background: #1a7ae8;
-      transform: translateY(-2px);
-      box-shadow: 0 0 50px rgba(41,151,255,0.6);
-    }
-
-    .btn-secondary {
-      background: rgba(255,255,255,0.1);
-      color: #fff;
-      padding: 14px 32px;
-      border-radius: 50px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.95rem;
-      border: 1px solid rgba(255,255,255,0.2);
-      transition: all 0.3s;
-    }
-    .btn-secondary:hover {
-      background: rgba(255,255,255,0.2);
-      transform: translateY(-2px);
-    }
-
-    /* 3D AIRPODS SCENE */
-    .scene-wrapper {
-      width: 100%;
-      max-width: 500px;
-      margin: 60px auto 0;
-      perspective: 1000px;
-      animation: fadeUp 1s 0.8s ease both;
-    }
-
-    .scene {
-      width: 100%;
-      height: 380px;
-      position: relative;
-      transform-style: preserve-3d;
-      animation: float 6s ease-in-out infinite;
-    }
-
-    /* SVG AirPod stylisé */
-    .airpod-container {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .airpod-svg {
-      filter: drop-shadow(0 0 40px rgba(41,151,255,0.6))
-              drop-shadow(0 30px 60px rgba(0,0,0,0.8));
-      animation: rotatePod 12s linear infinite;
-    }
-
-    .glow-ring {
-      position: absolute;
-      width: 300px;
-      height: 300px;
-      border-radius: 50%;
-      border: 1px solid rgba(41,151,255,0.2);
-      animation: pulse-ring 3s ease-in-out infinite;
-    }
-    .glow-ring:nth-child(2) {
-      width: 380px;
-      height: 380px;
-      border-color: rgba(191,90,242,0.1);
-      animation-delay: 1s;
-    }
-    .glow-ring:nth-child(3) {
-      width: 460px;
-      height: 460px;
-      border-color: rgba(41,151,255,0.05);
-      animation-delay: 2s;
-    }
-
-    .particles {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-    .particle {
-      position: absolute;
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: var(--blue);
-      animation: particle-float 4s ease-in-out infinite;
-    }
-
-    /* FEATURES */
-    .features {
-      padding: 120px 40px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .section-header {
-      text-align: center;
-      margin-bottom: 80px;
-    }
-    .section-header .tag {
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--blue);
-      margin-bottom: 16px;
-    }
-    .section-header h2 {
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      font-weight: 700;
-      letter-spacing: -1.5px;
-      line-height: 1.1;
-    }
-    .section-header h2 span {
-      background: linear-gradient(135deg, var(--blue), var(--purple));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
-    }
-
-    .feature-card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 24px;
-      padding: 36px 32px;
-      transition: all 0.4s;
-      position: relative;
-      overflow: hidden;
-    }
-    .feature-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(41,151,255,0.05), transparent);
-      opacity: 0;
-      transition: opacity 0.4s;
-    }
-    .feature-card:hover {
-      border-color: rgba(41,151,255,0.3);
-      transform: translateY(-6px);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-    }
-    .feature-card:hover::before { opacity: 1; }
-
-    .feature-icon {
-      width: 56px;
-      height: 56px;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.6rem;
-      margin-bottom: 20px;
-    }
-    .icon-blue { background: rgba(41,151,255,0.15); }
-    .icon-purple { background: rgba(191,90,242,0.15); }
-    .icon-green { background: rgba(50,215,75,0.15); }
-    .icon-orange { background: rgba(255,159,10,0.15); }
-
-    .feature-card h3 {
-      font-size: 1.2rem;
-      font-weight: 700;
-      margin-bottom: 10px;
-      letter-spacing: -0.3px;
-    }
-    .feature-card p {
-      color: rgba(255,255,255,0.5);
-      font-size: 0.9rem;
-      line-height: 1.7;
-    }
-
-    .feature-badge {
-      display: inline-block;
-      margin-top: 14px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--blue);
-      background: rgba(41,151,255,0.1);
-      padding: 4px 12px;
-      border-radius: 20px;
+    .feature-item h3 span { color: #2997ff; }
+    .feature-item p { font-size: 1rem; color: rgba(255,255,255,0.5); line-height: 1.85; max-width: 420px; }
+    .feature-badges { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; }
+    .fbadge {
+      font-size: 0.73rem; font-weight: 600; padding: 6px 14px; border-radius: 20px;
+      background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.65);
     }
 
     /* MODELS */
-    .models {
-      padding: 120px 40px;
-      background: rgba(255,255,255,0.02);
-    }
-
-    .models-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
+    .models-section { background: #f5f5f7; padding: 120px 48px; }
+    .models-header { text-align: center; margin-bottom: 80px; }
     .models-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 30px;
-      margin-top: 80px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+      max-width: 1200px; margin: 0 auto;
     }
-
     .model-card {
-      background: #111;
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 28px;
-      overflow: hidden;
-      transition: all 0.4s;
-      cursor: pointer;
+      background: #fff; border-radius: 28px; overflow: hidden;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.07);
+      transition: all .4s; cursor: pointer;
+      opacity: 0; transform: translateY(50px);
     }
-    .model-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
-      border-color: rgba(255,255,255,0.15);
+    .model-card:hover { transform: translateY(-8px) !important; box-shadow: 0 20px 60px rgba(0,0,0,0.14); }
+    .model-card.featured { border: 2px solid var(--blue); box-shadow: 0 8px 40px rgba(0,113,227,0.18); }
+    .model-canvas-wrap { height: 260px; position: relative; overflow: hidden; background: #fafafa; }
+    .model-canvas-wrap canvas { width: 100% !important; height: 100% !important; }
+    .featured-tag {
+      position: absolute; top: 14px; right: 14px; z-index: 10;
+      background: var(--blue); color: #fff; font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase; padding: 5px 12px; border-radius: 20px;
     }
-    .model-card.featured {
-      border-color: var(--blue);
-      box-shadow: 0 0 40px rgba(41,151,255,0.2);
+    .model-body { padding: 26px 28px 30px; }
+    .model-body h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 6px; }
+    .model-body .desc { font-size: 0.87rem; color: var(--gray); line-height: 1.6; margin-bottom: 18px; }
+    .model-specs { list-style: none; margin-bottom: 22px; }
+    .model-specs li {
+      font-size: 0.84rem; color: var(--gray); padding: 6px 0;
+      border-bottom: 1px solid #f0f0f2; display: flex; align-items: center; gap: 8px;
     }
+    .model-specs li:last-child { border-bottom: none; }
+    .model-specs li::before { content: '✓'; color: var(--blue); font-weight: 700; font-size: 0.78rem; }
+    .model-foot { display: flex; justify-content: space-between; align-items: center; }
+    .price { font-size: 1.65rem; font-weight: 800; color: var(--black); }
+    .price-sub { font-size: 0.75rem; color: var(--gray); margin-top: 2px; }
+    .btn-card {
+      background: var(--blue); color: #fff; border: none;
+      padding: 12px 22px; border-radius: 50px; font-weight: 700;
+      font-size: 0.88rem; cursor: pointer; transition: all .25s;
+    }
+    .btn-card:hover { background: var(--blue-light); transform: scale(1.05); }
 
-    .model-visual {
-      height: 240px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
+    /* SOUND */
+    .sound-outer { padding: 120px 48px; background: #fff; }
+    .sound-inner {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 100px;
+      align-items: center; max-width: 1200px; margin: 0 auto;
     }
-    .model-card:nth-child(1) .model-visual {
-      background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
-    }
-    .model-card:nth-child(2) .model-visual {
-      background: linear-gradient(135deg, #0a0a0a, #1a0a2e);
-    }
-    .model-card:nth-child(3) .model-visual {
-      background: linear-gradient(135deg, #0a0a0a, #0a1a1a);
-    }
-
-    .model-visual-svg {
-      animation: float 4s ease-in-out infinite;
-      filter: drop-shadow(0 10px 30px rgba(0,0,0,0.5));
-    }
-    .model-card:nth-child(2) .model-visual-svg {
-      animation-delay: -1.5s;
-    }
-    .model-card:nth-child(3) .model-visual-svg {
-      animation-delay: -3s;
-    }
-
-    .featured-badge {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      background: var(--blue);
-      color: #fff;
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      padding: 5px 12px;
-      border-radius: 20px;
-    }
-
-    .model-info {
-      padding: 28px 32px 32px;
-    }
-    .model-info h3 {
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-    .model-info .desc {
-      color: rgba(255,255,255,0.5);
-      font-size: 0.88rem;
-      line-height: 1.6;
-      margin-bottom: 20px;
-    }
-
-    .specs-list {
-      list-style: none;
-      margin-bottom: 24px;
-    }
-    .specs-list li {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.85rem;
-      color: rgba(255,255,255,0.6);
-      padding: 5px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
-    .specs-list li:last-child { border-bottom: none; }
-    .specs-list li::before {
-      content: '✓';
-      color: var(--blue);
-      font-weight: 700;
-      font-size: 0.8rem;
-    }
-
-    .model-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .price {
-      font-size: 1.6rem;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-    }
-    .price sup {
-      font-size: 0.9rem;
-      font-weight: 600;
-      vertical-align: super;
-    }
-
-    .btn-buy {
-      background: var(--blue);
-      color: #fff;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 50px;
-      font-weight: 700;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    .btn-buy:hover {
-      background: #1a7ae8;
-      transform: scale(1.05);
-    }
-    .model-card.featured .btn-buy {
-      box-shadow: 0 0 20px rgba(41,151,255,0.5);
-    }
-
-    /* SOUND SECTION */
-    .sound-section {
-      padding: 120px 40px;
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: center;
-    }
-
-    .sound-text .tag {
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--purple);
-      margin-bottom: 16px;
-    }
-    .sound-text h2 {
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 700;
-      letter-spacing: -1px;
-      line-height: 1.1;
-      margin-bottom: 24px;
-    }
-    .sound-text p {
-      color: rgba(255,255,255,0.5);
-      line-height: 1.8;
-      margin-bottom: 16px;
-      font-size: 0.95rem;
-    }
-
-    .stat-row {
-      display: flex;
-      gap: 40px;
-      margin-top: 40px;
-    }
-    .stat { text-align: left; }
+    .sound-text .section-title { margin: 12px 0 20px; }
+    .sound-text p { font-size: 0.95rem; color: var(--gray); line-height: 1.9; margin-bottom: 12px; }
+    .stats-row { display: flex; gap: 48px; margin-top: 40px; }
     .stat .num {
-      font-size: 2.5rem;
-      font-weight: 800;
-      letter-spacing: -1px;
-      background: linear-gradient(135deg, var(--blue), var(--purple));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      font-size: 3rem; font-weight: 800; letter-spacing: -1.5px; color: var(--black);
     }
-    .stat .label {
-      font-size: 0.8rem;
-      color: rgba(255,255,255,0.4);
-      margin-top: 4px;
+    .stat .num span { font-size: 1.3rem; vertical-align: super; }
+    .stat .lbl { font-size: 0.78rem; color: var(--gray); margin-top: 4px; }
+    .sound-viz { display: flex; align-items: center; justify-content: center; height: 280px; }
+    #eq-bars { display: flex; align-items: flex-end; gap: 7px; height: 220px; }
+    .eq-bar {
+      width: 13px; border-radius: 7px;
+      background: linear-gradient(to top, var(--blue), #7ac8ff);
+      animation: eqBounce 1s ease-in-out infinite;
     }
-
-    .sound-visual {
-      position: relative;
-      height: 400px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .equalizer {
-      display: flex;
-      align-items: flex-end;
-      gap: 8px;
-      height: 200px;
-    }
-    .bar {
-      width: 12px;
-      border-radius: 6px;
-      background: linear-gradient(to top, var(--blue), var(--purple));
-      animation: eq-bounce 1.2s ease-in-out infinite;
+    @keyframes eqBounce {
+      0%,100% { transform: scaleY(0.25); }
+      50% { transform: scaleY(1); }
     }
 
     /* CTA */
     .cta-section {
-      padding: 120px 40px;
-      text-align: center;
-      background: radial-gradient(ellipse at 50% 50%, rgba(41,151,255,0.1) 0%, transparent 70%);
+      background: var(--black); color: #fff; text-align: center; padding: 140px 48px;
     }
-    .cta-section h2 {
-      font-size: clamp(2.5rem, 6vw, 5rem);
-      font-weight: 800;
-      letter-spacing: -2px;
-      margin-bottom: 20px;
+    .cta-section .section-label { color: #2997ff; }
+    .cta-section .section-title { color: #fff; margin: 14px 0 20px; }
+    .cta-section .sub { font-size: 1.05rem; color: rgba(255,255,255,0.5); margin-bottom: 44px; }
+    .btn-white {
+      background: #fff; color: var(--black); padding: 18px 48px; border-radius: 50px;
+      font-weight: 700; font-size: 1rem; text-decoration: none;
+      transition: all .3s; display: inline-block; box-shadow: 0 4px 24px rgba(255,255,255,0.12);
     }
-    .cta-section p {
-      color: rgba(255,255,255,0.5);
-      font-size: 1.1rem;
-      margin-bottom: 40px;
-    }
+    .btn-white:hover { transform: translateY(-3px); box-shadow: 0 10px 40px rgba(255,255,255,0.22); }
 
     /* FOOTER */
     footer {
-      border-top: 1px solid rgba(255,255,255,0.08);
-      padding: 40px;
-      text-align: center;
-      color: rgba(255,255,255,0.3);
-      font-size: 0.85rem;
-    }
-
-    /* ANIMATIONS */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0px) rotateY(0deg); }
-      50% { transform: translateY(-20px) rotateY(10deg); }
-    }
-
-    @keyframes rotatePod {
-      0% { transform: rotateY(0deg) rotateX(5deg); }
-      50% { transform: rotateY(180deg) rotateX(-5deg); }
-      100% { transform: rotateY(360deg) rotateX(5deg); }
-    }
-
-    @keyframes pulse-ring {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.08); opacity: 0.5; }
-    }
-
-    @keyframes particle-float {
-      0%, 100% { transform: translateY(0) translateX(0); opacity: 0.8; }
-      50% { transform: translateY(-30px) translateX(10px); opacity: 0.2; }
-    }
-
-    @keyframes eq-bounce {
-      0%, 100% { height: 20px; }
-      50% { height: var(--h); }
-    }
-
-    @keyframes scroll-glow {
-      0%, 100% { box-shadow: 0 0 20px rgba(41,151,255,0.3); }
-      50% { box-shadow: 0 0 40px rgba(41,151,255,0.7); }
-    }
-
-    /* SCROLL FADE IN */
-    .reveal {
-      opacity: 0;
-      transform: translateY(40px);
-      transition: all 0.8s ease;
-    }
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
+      background: #f5f5f7; border-top: 1px solid #e2e2e7;
+      padding: 36px 48px; text-align: center;
+      font-size: 0.8rem; color: var(--gray); line-height: 1.8;
     }
 
     /* RESPONSIVE */
-    @media (max-width: 768px) {
-      nav ul { display: none; }
-      .sound-section { grid-template-columns: 1fr; gap: 60px; }
-      .stat-row { gap: 24px; }
+    @media(max-width: 900px) {
+      .features-section { grid-template-columns: 1fr; }
+      .features-sticky { display: none; }
+      .models-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+      .sound-inner { grid-template-columns: 1fr; gap: 60px; }
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .models-section, .sound-outer, .cta-section { padding: 80px 24px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- NAV -->
-  <nav>
-    <div class="logo">AirPods</div>
-    <ul>
-      <li><a href="#features">Features</a></li>
-      <li><a href="#models">Modèles</a></li>
-      <li><a href="#sound">Son</a></li>
-      <li><a href="#buy" class="btn-primary" style="padding:8px 20px;font-size:0.85rem;">Acheter</a></li>
-    </ul>
-  </nav>
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">AirPods</div>
+  <ul class="nav-links">
+    <li><a href="#features">Fonctions</a></li>
+    <li><a href="#models">Modèles</a></li>
+    <li><a href="#son">Son</a></li>
+  </ul>
+  <a href="#models" class="nav-cta">Acheter</a>
+</nav>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-tag">Nouveau — 2024</div>
-    <h1>AirPods Pro</h1>
-    <p>Son adaptatif de nouvelle génération. Réduction de bruit active. Audio spatial personnalisé. Une expérience sonore sans précédent.</p>
-    <div class="hero-btns">
-      <a href="#models" class="btn-primary">Découvrir les modèles</a>
-      <a href="#features" class="btn-secondary">En savoir plus</a>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">Nouveau · 2024</div>
+  <h1 class="hero-title">AirPods<br><span>Pro</span></h1>
+  <p class="hero-sub">Audio spatial adaptatif. Réduction de bruit 2× plus puissante. Une expérience sonore entièrement réinventée.</p>
+  <div class="hero-btns">
+    <a href="#models" class="btn-blue">Voir les modèles</a>
+    <a href="#features" class="btn-outline">Découvrir</a>
+  </div>
+  <div id="canvas-container"></div>
+  <div class="scroll-hint">
+    <span>Défiler</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section" id="features">
+  <div class="features-sticky">
+    <canvas id="canvas-features"></canvas>
+  </div>
+  <div class="features-scroll">
+    <div class="feature-item">
+      <div class="feature-num">01 — Réduction de bruit</div>
+      <h3>Silence<br><span>absolu</span></h3>
+      <p>La puce H2 analyse ton environnement 48 000 fois par seconde et supprime jusqu'à 97 % du bruit ambiant. Métro, open space, avion — plus rien ne te distrait.</p>
+      <div class="feature-badges">
+        <span class="fbadge">Puce H2</span>
+        <span class="fbadge">−29 dB</span>
+        <span class="fbadge">Adaptatif</span>
+      </div>
     </div>
+    <div class="feature-item">
+      <div class="feature-num">02 — Audio Spatial</div>
+      <h3>Son<br><span>immersif</span></h3>
+      <p>L'audio spatial personnalisé cartographie la forme de tes oreilles pour créer un son tridimensionnel unique. Les films et la musique t'entourent de toutes parts.</p>
+      <div class="feature-badges">
+        <span class="fbadge">Dolby Atmos</span>
+        <span class="fbadge">360°</span>
+        <span class="fbadge">Spatial Audio</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-num">03 — Autonomie</div>
+      <h3><span>30h</span><br>d'écoute</h3>
+      <p>6h en écoute continue avec ANC activé. 30h au total avec le boîtier MagSafe. Cinq minutes de charge suffisent pour une heure de musique.</p>
+      <div class="feature-badges">
+        <span class="fbadge">MagSafe</span>
+        <span class="fbadge">USB-C</span>
+        <span class="fbadge">Recharge rapide</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-num">04 — Confort</div>
+      <h3>Conçus<br>pour <span>toi</span></h3>
+      <p>Quatre tailles d'embouts en silicone pour un ajustement parfait. Résistance IPX4 à la sueur et aux éclaboussures. Contrôle tactile intuitif sur la tige.</p>
+      <div class="feature-badges">
+        <span class="fbadge">IPX4</span>
+        <span class="fbadge">4 tailles</span>
+        <span class="fbadge">Tactile</span>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- 3D Scene -->
-    <div class="scene-wrapper">
-      <div class="scene">
-        <div class="airpod-container">
-          <!-- Glow rings -->
-          <div class="glow-ring"></div>
-          <div class="glow-ring"></div>
-          <div class="glow-ring"></div>
-
-          <!-- AirPod SVG 3D stylisé -->
-          <svg class="airpod-svg" width="280" height="320" viewBox="0 0 280 320" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Case ombre -->
-            <ellipse cx="140" cy="300" rx="90" ry="12" fill="rgba(0,0,0,0.5)"/>
-
-            <!-- Case body -->
-            <rect x="60" y="100" width="160" height="180" rx="36" fill="url(#caseGrad)"/>
-            <!-- Case highlight -->
-            <rect x="70" y="108" width="60" height="80" rx="18" fill="rgba(255,255,255,0.06)"/>
-            <!-- Case border -->
-            <rect x="60" y="100" width="160" height="180" rx="36" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" fill="none"/>
-
-            <!-- Charnière -->
-            <rect x="115" y="275" width="50" height="8" rx="4" fill="rgba(255,255,255,0.1)"/>
-
-            <!-- AirPod gauche -->
-            <g transform="translate(85, 60)">
-              <!-- Tige -->
-              <rect x="14" y="40" width="12" height="55" rx="6" fill="url(#stemGrad)"/>
-              <rect x="15" y="42" width="4" height="50" rx="2" fill="rgba(255,255,255,0.15)"/>
-              <!-- Tête -->
-              <ellipse cx="20" cy="34" rx="18" ry="22" fill="url(#earGrad)"/>
-              <ellipse cx="20" cy="34" rx="18" ry="22" stroke="rgba(255,255,255,0.15)" stroke-width="1" fill="none"/>
-              <!-- Speaker mesh -->
-              <ellipse cx="20" cy="36" rx="9" ry="11" fill="rgba(0,0,0,0.4)"/>
-              <circle cx="17" cy="33" r="1.5" fill="rgba(255,255,255,0.2)"/>
-              <circle cx="20" cy="37" r="1.5" fill="rgba(255,255,255,0.2)"/>
-              <circle cx="23" cy="33" r="1.5" fill="rgba(255,255,255,0.2)"/>
-              <!-- LED -->
-              <circle cx="20" cy="87" r="3" fill="#2997ff" opacity="0.9"/>
-              <circle cx="20" cy="87" r="5" fill="rgba(41,151,255,0.3)"/>
-            </g>
-
-            <!-- AirPod droit -->
-            <g transform="translate(155, 55)">
-              <rect x="14" y="40" width="12" height="55" rx="6" fill="url(#stemGrad)"/>
-              <rect x="15" y="42" width="4" height="50" rx="2" fill="rgba(255,255,255,0.15)"/>
-              <ellipse cx="20" cy="34" rx="18" ry="22" fill="url(#earGrad)"/>
-              <ellipse cx="20" cy="34" rx="18" ry="22" stroke="rgba(255,255,255,0.15)" stroke-width="1" fill="none"/>
-              <ellipse cx="20" cy="36" rx="9" ry="11" fill="rgba(0,0,0,0.4)"/>
-              <circle cx="17" cy="33" r="1.5" fill="rgba(255,255,255,0.2)"/>
-              <circle cx="20" cy="37" r="1.5" fill="rgba(255,255,255,0.2)"/>
-              <circle cx="23" cy="33" r="1.5" fill="rgba(255,255,255,0.2)"/>
-              <circle cx="20" cy="87" r="3" fill="#bf5af2" opacity="0.9"/>
-              <circle cx="20" cy="87" r="5" fill="rgba(191,90,242,0.3)"/>
-            </g>
-
-            <!-- Logo Apple sur la case -->
-            <text x="140" y="200" text-anchor="middle" font-size="22" fill="rgba(255,255,255,0.4)" font-family="sans-serif"></text>
-
-            <defs>
-              <linearGradient id="caseGrad" x1="60" y1="100" x2="220" y2="280" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stop-color="#2a2a2e"/>
-                <stop offset="100%" stop-color="#1a1a1e"/>
-              </linearGradient>
-              <linearGradient id="stemGrad" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stop-color="#e8e8ed"/>
-                <stop offset="100%" stop-color="#c8c8cc"/>
-              </linearGradient>
-              <linearGradient id="earGrad" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#f0f0f5"/>
-                <stop offset="100%" stop-color="#d0d0d5"/>
-              </linearGradient>
-            </defs>
-          </svg>
-
-          <!-- Particules -->
-          <div class="particles">
-            <div class="particle" style="top:20%;left:15%;animation-delay:0s;"></div>
-            <div class="particle" style="top:70%;left:80%;animation-delay:0.5s;background:var(--purple)"></div>
-            <div class="particle" style="top:40%;left:90%;animation-delay:1s;"></div>
-            <div class="particle" style="top:80%;left:20%;animation-delay:1.5s;background:var(--purple)"></div>
-            <div class="particle" style="top:10%;left:70%;animation-delay:2s;"></div>
-            <div class="particle" style="top:60%;left:5%;animation-delay:2.5s;background:var(--purple)"></div>
+<!-- MODELS -->
+<section class="models-section" id="models">
+  <div class="models-header">
+    <div class="section-label">Gamme complète</div>
+    <h2 class="section-title">Choisis ton <em>modèle</em></h2>
+  </div>
+  <div class="models-grid">
+    <div class="model-card">
+      <div class="model-canvas-wrap"><canvas id="c1"></canvas></div>
+      <div class="model-body">
+        <h3>AirPods 4</h3>
+        <p class="desc">La qualité Apple au quotidien, sans compromis sur le son.</p>
+        <ul class="model-specs">
+          <li>Son haute fidélité</li>
+          <li>Mode transparence</li>
+          <li>24h autonomie totale</li>
+          <li>Résistance sueur</li>
+        </ul>
+        <div class="model-foot">
+          <div>
+            <div class="price">149 €</div>
+            <div class="price-sub">Ou 12,41 €/mois</div>
           </div>
+          <button class="btn-card" onclick="addCart(this)">Acheter</button>
         </div>
       </div>
     </div>
-  </section>
-
-  <!-- FEATURES -->
-  <section class="features" id="features">
-    <div class="section-header reveal">
-      <div class="tag">Technologie</div>
-      <h2>Conçu pour <span>dépasser</span><br>les limites</h2>
-    </div>
-
-    <div class="features-grid">
-      <div class="feature-card reveal">
-        <div class="feature-icon icon-blue">🔇</div>
-        <h3>Réduction de bruit active</h3>
-        <p>Le système ANC le plus avancé jamais conçu. Deux fois plus puissant que la génération précédente, il supprime jusqu'à 97% du bruit ambiant.</p>
-        <span class="feature-badge">H2 Chip</span>
+    <div class="model-card featured">
+      <div class="model-canvas-wrap">
+        <span class="featured-tag">Best-seller</span>
+        <canvas id="c2"></canvas>
       </div>
-      <div class="feature-card reveal">
-        <div class="feature-icon icon-purple">🎵</div>
-        <h3>Audio Spatial Adaptatif</h3>
-        <p>Un son tridimensionnel qui suit les mouvements de ta tête. Les films, la musique et les podcasts prennent vie autour de toi.</p>
-        <span class="feature-badge">Dolby Atmos</span>
-      </div>
-      <div class="feature-card reveal">
-        <div class="feature-icon icon-green">🔋</div>
-        <h3>30h d'autonomie</h3>
-        <p>6h en écoute continue, jusqu'à 30h avec le boîtier de charge. Recharge rapide : 5 minutes = 1h d'écoute.</p>
-        <span class="feature-badge">USB-C & MagSafe</span>
-      </div>
-      <div class="feature-card reveal">
-        <div class="feature-icon icon-orange">🌊</div>
-        <h3>Résistance IPX4</h3>
-        <p>Résistant à la sueur et aux éclaboussures. Que ce soit à la salle de sport ou sous la pluie, les AirPods suivent ton rythme.</p>
-        <span class="feature-badge">Sport Ready</span>
-      </div>
-      <div class="feature-card reveal">
-        <div class="feature-icon icon-blue">👆</div>
-        <h3>Contrôle tactile</h3>
-        <p>Pression, glissement, appui. Contrôle le volume, passe à la piste suivante ou décroches un appel sans sortir ton iPhone.</p>
-        <span class="feature-badge">Nouveau</span>
-      </div>
-      <div class="feature-card reveal">
-        <div class="feature-icon icon-purple">🔗</div>
-        <h3>Connexion instantanée</h3>
-        <p>Associe-les une fois, utilise-les sur tous tes appareils Apple. Le basculement automatique est plus rapide que jamais.</p>
-        <span class="feature-badge">Bluetooth 5.3</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- MODELS -->
-  <section class="models" id="models">
-    <div class="models-inner">
-      <div class="section-header reveal">
-        <div class="tag">Gamme</div>
-        <h2>Trouve ton <span>modèle</span> idéal</h2>
-      </div>
-
-      <div class="models-grid">
-        <!-- AirPods 4 -->
-        <div class="model-card reveal">
-          <div class="model-visual">
-            <svg class="model-visual-svg" width="140" height="180" viewBox="0 0 140 180">
-              <rect x="40" y="60" width="60" height="100" rx="20" fill="url(#mg1)"/>
-              <rect x="55" y="20" width="10" height="50" rx="5" fill="#e8e8ed"/>
-              <rect x="75" y="24" width="10" height="46" rx="5" fill="#e8e8ed"/>
-              <ellipse cx="60" cy="54" rx="14" ry="16" fill="#f0f0f5"/>
-              <ellipse cx="80" cy="54" rx="14" ry="16" fill="#f0f0f5"/>
-              <defs>
-                <linearGradient id="mg1" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stop-color="#2a2a2e"/>
-                  <stop offset="100%" stop-color="#1a1a1e"/>
-                </linearGradient>
-              </defs>
-            </svg>
+      <div class="model-body">
+        <h3>AirPods Pro 2</h3>
+        <p class="desc">L'expérience sonore absolue. ANC, spatial audio et puce H2.</p>
+        <ul class="model-specs">
+          <li>ANC 2× plus puissant</li>
+          <li>Audio Spatial Adaptatif</li>
+          <li>30h autonomie totale</li>
+          <li>Contrôle tactile avancé</li>
+          <li>IPX4 sport ready</li>
+        </ul>
+        <div class="model-foot">
+          <div>
+            <div class="price">279 €</div>
+            <div class="price-sub">Ou 23,25 €/mois</div>
           </div>
-          <div class="model-info">
-            <h3>AirPods 4</h3>
-            <p class="desc">Le confort et la qualité Apple à un prix accessible. Parfaits pour le quotidien.</p>
-            <ul class="specs-list">
-              <li>Son haute fidélité</li>
-              <li>Mode Transparence</li>
-              <li>24h d'autonomie totale</li>
-              <li>Résistance à la sueur</li>
-            </ul>
-            <div class="model-footer">
-              <div class="price"><sup>€</sup>149</div>
-              <button class="btn-buy">Acheter</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- AirPods Pro 2 (featured) -->
-        <div class="model-card featured reveal">
-          <div class="model-visual">
-            <span class="featured-badge">Best-seller</span>
-            <svg class="model-visual-svg" width="160" height="200" viewBox="0 0 160 200">
-              <rect x="30" y="70" width="100" height="110" rx="28" fill="url(#mg2)"/>
-              <rect x="30" y="70" width="100" height="110" rx="28" stroke="rgba(41,151,255,0.3)" stroke-width="1.5" fill="none"/>
-              <rect x="56" y="18" width="13" height="62" rx="6.5" fill="#e8e8ed"/>
-              <rect x="91" y="22" width="13" height="58" rx="6.5" fill="#e8e8ed"/>
-              <ellipse cx="62" cy="60" rx="18" ry="22" fill="#f5f5f7"/>
-              <ellipse cx="97" cy="60" rx="18" ry="22" fill="#f5f5f7"/>
-              <ellipse cx="62" cy="62" rx="9" ry="11" fill="rgba(0,0,0,0.3)"/>
-              <ellipse cx="97" cy="62" rx="9" ry="11" fill="rgba(0,0,0,0.3)"/>
-              <circle cx="62" cy="118" r="4" fill="#2997ff" opacity="0.9"/>
-              <circle cx="62" cy="118" r="7" fill="rgba(41,151,255,0.3)"/>
-              <defs>
-                <linearGradient id="mg2" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stop-color="#2e2e34"/>
-                  <stop offset="100%" stop-color="#1c1c22"/>
-                </linearGradient>
-              </defs>
-            </svg>
-          </div>
-          <div class="model-info">
-            <h3>AirPods Pro 2</h3>
-            <p class="desc">L'expérience sonore ultime. ANC de pointe, audio spatial et puce H2.</p>
-            <ul class="specs-list">
-              <li>Réduction de bruit active 2x</li>
-              <li>Audio Spatial Adaptatif</li>
-              <li>30h d'autonomie totale</li>
-              <li>Contrôle tactile avancé</li>
-              <li>Résistance IPX4</li>
-            </ul>
-            <div class="model-footer">
-              <div class="price"><sup>€</sup>279</div>
-              <button class="btn-buy">Acheter</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- AirPods Max -->
-        <div class="model-card reveal">
-          <div class="model-visual">
-            <svg class="model-visual-svg" width="160" height="200" viewBox="0 0 160 200">
-              <!-- Headband -->
-              <path d="M30 80 Q80 20 130 80" stroke="#c8c8cc" stroke-width="12" fill="none" stroke-linecap="round"/>
-              <!-- Left cup -->
-              <ellipse cx="30" cy="110" rx="28" ry="36" fill="url(#mg3)"/>
-              <ellipse cx="30" cy="110" rx="22" ry="28" fill="rgba(255,255,255,0.05)"/>
-              <!-- Right cup -->
-              <ellipse cx="130" cy="110" rx="28" ry="36" fill="url(#mg3)"/>
-              <ellipse cx="130" cy="110" rx="22" ry="28" fill="rgba(255,255,255,0.05)"/>
-              <!-- Crown -->
-              <circle cx="80" cy="24" r="8" fill="rgba(255,255,255,0.2)"/>
-              <defs>
-                <linearGradient id="mg3" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stop-color="#3a3a40"/>
-                  <stop offset="100%" stop-color="#2a2a30"/>
-                </linearGradient>
-              </defs>
-            </svg>
-          </div>
-          <div class="model-info">
-            <h3>AirPods Max</h3>
-            <p class="desc">Le casque premium over-ear avec drivers haute performance et design iconique.</p>
-            <ul class="specs-list">
-              <li>Drivers 40mm custom</li>
-              <li>ANC computationnel</li>
-              <li>20h d'autonomie</li>
-              <li>5 coloris disponibles</li>
-            </ul>
-            <div class="model-footer">
-              <div class="price"><sup>€</sup>579</div>
-              <button class="btn-buy">Acheter</button>
-            </div>
-          </div>
+          <button class="btn-card" onclick="addCart(this)">Acheter</button>
         </div>
       </div>
     </div>
-  </section>
+    <div class="model-card">
+      <div class="model-canvas-wrap"><canvas id="c3"></canvas></div>
+      <div class="model-body">
+        <h3>AirPods Max</h3>
+        <p class="desc">Le casque over-ear premium au son d'exception.</p>
+        <ul class="model-specs">
+          <li>Drivers 40mm custom</li>
+          <li>ANC computationnel</li>
+          <li>20h autonomie</li>
+          <li>5 coloris disponibles</li>
+        </ul>
+        <div class="model-foot">
+          <div>
+            <div class="price">579 €</div>
+            <div class="price-sub">Ou 48,25 €/mois</div>
+          </div>
+          <button class="btn-card" onclick="addCart(this)">Acheter</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <!-- SOUND SECTION -->
-  <section class="sound-section" id="sound">
-    <div class="sound-text reveal">
-      <div class="tag">Audio</div>
-      <h2>Un son qui te transporte ailleurs</h2>
-      <p>La puce H2 analyse en temps réel ton environnement sonore et adapte le son en permanence. Chaque détail musical est rendu avec une précision chirurgicale.</p>
-      <p>Le moteur audio adaptatif ajuste automatiquement le niveau de réduction de bruit selon l'environnement : transports, open space, rue passante.</p>
-      <div class="stat-row">
+<!-- SON -->
+<section class="sound-outer" id="son">
+  <div class="sound-inner">
+    <div class="sound-text">
+      <div class="section-label">Audio</div>
+      <h2 class="section-title">Un son qui<br>te <em>transporte</em></h2>
+      <p>La puce H2 traite l'audio en temps réel avec une latence de 0,7 ms. Chaque note, chaque fréquence, chaque détail est reproduit avec une précision absolue.</p>
+      <p>L'égaliseur adaptatif ajuste automatiquement les fréquences selon la forme de ton canal auditif pour une calibration unique à chaque écoute.</p>
+      <div class="stats-row">
         <div class="stat">
-          <div class="num">97%</div>
-          <div class="label">Bruit supprimé</div>
+          <div class="num" data-val="97">0<span>%</span></div>
+          <div class="lbl">Bruit supprimé</div>
         </div>
         <div class="stat">
-          <div class="num">48k</div>
-          <div class="label">Analyses/sec</div>
+          <div class="num" data-val="48">0<span>k</span></div>
+          <div class="lbl">Analyses/sec</div>
         </div>
         <div class="stat">
-          <div class="num">0.7ms</div>
-          <div class="label">Latence audio</div>
+          <div class="num">0.7<span>ms</span></div>
+          <div class="lbl">Latence audio</div>
         </div>
       </div>
     </div>
-
-    <div class="sound-visual reveal">
-      <div class="equalizer" id="eq">
-        <!-- Bars générées par JS -->
-      </div>
+    <div class="sound-viz">
+      <div id="eq-bars"></div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- CTA -->
-  <section class="cta-section" id="buy">
-    <h2 class="reveal">Prêt à ressentir<br>la différence ?</h2>
-    <p class="reveal">Livraison gratuite. Retours sous 14 jours. Garantie 1 an.</p>
-    <div class="reveal">
-      <a href="#models" class="btn-primary" style="font-size:1.1rem;padding:18px 48px;animation:scroll-glow 2s infinite;">
-        Commander maintenant
-      </a>
-    </div>
-  </section>
+<!-- CTA -->
+<section class="cta-section">
+  <div class="section-label">Commander</div>
+  <h2 class="section-title">Prêt à tout entendre<br>différemment ?</h2>
+  <p class="sub">Livraison gratuite · Retours sous 14 jours · Garantie 1 an</p>
+  <a href="#models" class="btn-white">Commander maintenant</a>
+</section>
 
-  <!-- FOOTER -->
-  <footer>
-    <p>© 2024 AirPods Store — Tous droits réservés</p>
-    <p style="margin-top:8px;font-size:0.75rem;">Apple, AirPods, AirPods Pro et AirPods Max sont des marques d'Apple Inc.</p>
-  </footer>
+<!-- FOOTER -->
+<footer>
+  <p>© 2024 AirPods Store — Tous droits réservés</p>
+  <p>Apple, AirPods, AirPods Pro et AirPods Max sont des marques déposées d'Apple Inc.</p>
+</footer>
 
-  <script>
-    // Equalizer bars
-    const eq = document.getElementById('eq');
-    const heights = [40, 70, 55, 90, 120, 80, 60, 100, 75, 45, 85, 110, 65, 95, 50];
-    heights.forEach((h, i) => {
-      const bar = document.createElement('div');
-      bar.className = 'bar';
-      bar.style.cssText = `height:${h}px;--h:${h}px;animation-delay:${i * 0.08}s;animation-duration:${0.8 + Math.random() * 0.8}s`;
-      eq.appendChild(bar);
+<script>
+/* ── UTILS ── */
+function makeRenderer(canvas, bg, alpha) {
+  const r = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: !!alpha });
+  r.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  r.shadowMap.enabled = true;
+  r.shadowMap.type = THREE.PCFSoftShadowMap;
+  if (!alpha) r.setClearColor(bg);
+  return r;
+}
+
+/* ── AIRPOD PRO 3D ── */
+function buildAirPodPro(color) {
+  color = color || 0xfafafa;
+  const g = new THREE.Group();
+
+  const mat = new THREE.MeshPhysicalMaterial({
+    color: color, metalness: 0.0, roughness: 0.12,
+    clearcoat: 1.0, clearcoatRoughness: 0.04, reflectivity: 0.9
+  });
+  const matDark = new THREE.MeshPhysicalMaterial({ color: 0x1a1a1e, metalness: 0.2, roughness: 0.5 });
+  const matTip = new THREE.MeshPhysicalMaterial({
+    color: 0xe0e0e8, metalness: 0.0, roughness: 0.55, transparent: true, opacity: 0.9
+  });
+  const matLed = new THREE.MeshStandardMaterial({ color: 0x0071e3, emissive: 0x0071e3, emissiveIntensity: 2 });
+
+  /* Embout silicone */
+  var tipS = new THREE.SphereGeometry(0.3, 32, 32);
+  tipS.scale(1, 0.8, 1);
+  var tip = new THREE.Mesh(tipS, matTip);
+  tip.position.set(0, 0.55, 0);
+  g.add(tip);
+
+  /* Anneau embout */
+  var ringG = new THREE.TorusGeometry(0.22, 0.04, 16, 48);
+  var ring = new THREE.Mesh(ringG, matTip);
+  ring.position.set(0, 0.3, 0);
+  ring.rotation.x = Math.PI / 2;
+  g.add(ring);
+
+  /* Corps principal */
+  var bodyS = new THREE.SphereGeometry(0.52, 64, 64);
+  bodyS.scale(1, 1.18, 0.94);
+  var body = new THREE.Mesh(bodyS, mat);
+  body.castShadow = true;
+  g.add(body);
+
+  /* Rebord grille speaker */
+  var grillRingG = new THREE.TorusGeometry(0.23, 0.02, 16, 48);
+  var grillRing = new THREE.Mesh(grillRingG, matDark);
+  grillRing.position.set(0, 0.08, 0.49);
+  grillRing.rotation.x = 0.18;
+  g.add(grillRing);
+
+  /* Mesh grille */
+  var grillG = new THREE.CircleGeometry(0.22, 32);
+  var grill = new THREE.Mesh(grillG, matDark);
+  grill.position.set(0, 0.08, 0.5);
+  grill.rotation.x = -0.18;
+  g.add(grill);
+
+  /* Trous speaker */
+  for (var i = 0; i < 8; i++) {
+    var a = (i / 8) * Math.PI * 2;
+    var hG = new THREE.CircleGeometry(0.025, 8);
+    var h = new THREE.Mesh(hG, new THREE.MeshStandardMaterial({ color: 0x111111 }));
+    h.position.set(Math.cos(a)*0.14, 0.08 + Math.sin(a)*0.14, 0.505);
+    h.rotation.x = -0.18;
+    g.add(h);
+  }
+  var ch = new THREE.Mesh(new THREE.CircleGeometry(0.028, 8), new THREE.MeshStandardMaterial({ color: 0x111111 }));
+  ch.position.set(0, 0.08, 0.506); ch.rotation.x = -0.18;
+  g.add(ch);
+
+  /* Capteur ANC haut */
+  var micG = new THREE.SphereGeometry(0.045, 16, 16);
+  var mic1 = new THREE.Mesh(micG, matDark);
+  mic1.position.set(0, 0.54, 0.2);
+  g.add(mic1);
+
+  /* Tige */
+  var stemG = new THREE.CylinderGeometry(0.115, 0.09, 1.25, 32);
+  var stem = new THREE.Mesh(stemG, mat);
+  stem.position.set(0, -0.98, 0);
+  stem.castShadow = true;
+  g.add(stem);
+
+  /* Bas de tige arrondi */
+  var capG = new THREE.SphereGeometry(0.09, 32, 32);
+  capG.scale(1, 0.55, 1);
+  var cap = new THREE.Mesh(capG, mat);
+  cap.position.set(0, -1.625, 0);
+  g.add(cap);
+
+  /* LED */
+  var led = new THREE.Mesh(new THREE.SphereGeometry(0.042, 16, 16), matLed);
+  led.position.set(0.1, -1.38, 0.06);
+  g.add(led);
+
+  /* Aura LED */
+  var aura = new THREE.Mesh(
+    new THREE.SphereGeometry(0.08, 16, 16),
+    new THREE.MeshStandardMaterial({ color: 0x0071e3, transparent: true, opacity: 0.25 })
+  );
+  aura.position.copy(led.position);
+  g.add(aura);
+
+  /* Ligne déco tige */
+  var lineG = new THREE.CylinderGeometry(0.005, 0.005, 0.75, 8);
+  var line = new THREE.Mesh(lineG, new THREE.MeshStandardMaterial({ color: 0xbcbcbc }));
+  line.position.set(0.112, -1.02, 0);
+  line.rotation.z = 0.055;
+  g.add(line);
+
+  /* Microphone bas tige */
+  var micBot = new THREE.Mesh(new THREE.SphereGeometry(0.04, 12, 12), matDark);
+  micBot.position.set(0, -1.55, 0.06);
+  g.add(micBot);
+
+  return g;
+}
+
+/* ── BOITIER ── */
+function buildCase() {
+  var g = new THREE.Group();
+  var mat = new THREE.MeshPhysicalMaterial({
+    color: 0xf8f8fa, metalness: 0.0, roughness: 0.18,
+    clearcoat: 1.0, clearcoatRoughness: 0.04
+  });
+  var matDark = new THREE.MeshStandardMaterial({ color: 0x2c2c2e, roughness: 0.4 });
+
+  /* Corps */
+  var bodyG = new THREE.BoxGeometry(1.5, 1.9, 0.9);
+  var body = new THREE.Mesh(bodyG, mat);
+  body.castShadow = true;
+  g.add(body);
+
+  /* Couvercle ouvert */
+  var lidG = new THREE.BoxGeometry(1.5, 0.55, 0.9);
+  var lid = new THREE.Mesh(lidG, mat);
+  lid.position.set(0, 1.22, 0);
+  lid.rotation.x = -0.28;
+  g.add(lid);
+
+  /* Charnière */
+  var hingeG = new THREE.CylinderGeometry(0.065, 0.065, 1.4, 20);
+  hingeG.rotateZ(Math.PI / 2);
+  var hinge = new THREE.Mesh(hingeG, matDark);
+  hinge.position.set(0, 0.93, -0.42);
+  g.add(hinge);
+
+  /* LED orange */
+  var ledMat = new THREE.MeshStandardMaterial({ color: 0xff9500, emissive: 0xff9500, emissiveIntensity: 1.2 });
+  var led = new THREE.Mesh(new THREE.SphereGeometry(0.045, 16, 16), ledMat);
+  led.position.set(0, -0.22, 0.46);
+  g.add(led);
+
+  /* USB-C */
+  var portG = new THREE.BoxGeometry(0.24, 0.085, 0.04);
+  var port = new THREE.Mesh(portG, matDark);
+  port.position.set(0, -0.96, 0.46);
+  g.add(port);
+
+  /* Gravure logo */
+  var logoG = new THREE.CircleGeometry(0.12, 32);
+  var logo = new THREE.Mesh(logoG, new THREE.MeshStandardMaterial({ color: 0xe0e0e5 }));
+  logo.position.set(0, 0.25, 0.46);
+  g.add(logo);
+
+  return g;
+}
+
+/* ── PARTICLES ── */
+function buildParticles(n, spread, col) {
+  var geo = new THREE.BufferGeometry();
+  var pos = new Float32Array(n * 3);
+  for (var i = 0; i < n; i++) {
+    pos[i*3]   = (Math.random()-0.5)*spread;
+    pos[i*3+1] = (Math.random()-0.5)*spread;
+    pos[i*3+2] = (Math.random()-0.5)*spread;
+  }
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  return new THREE.Points(geo, new THREE.PointsMaterial({ color: col, size: 0.05, transparent: true, opacity: 0.5 }));
+}
+
+/* ════════ HERO SCENE ════════ */
+(function() {
+  var container = document.getElementById('canvas-container');
+  var canvas = document.createElement('canvas');
+  container.appendChild(canvas);
+
+  var renderer = makeRenderer(canvas, null, true);
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(42, container.clientWidth / container.clientHeight, 0.1, 100);
+  camera.position.set(0, 0.5, 7.5);
+
+  /* Lumières */
+  scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+  var d1 = new THREE.DirectionalLight(0xffffff, 1.4); d1.position.set(5, 8, 6); d1.castShadow = true; scene.add(d1);
+  var d2 = new THREE.DirectionalLight(0xc0e0ff, 0.6); d2.position.set(-4, -3, -4); scene.add(d2);
+  var pt = new THREE.PointLight(0x0071e3, 2, 20); pt.position.set(0, 4, 4); scene.add(pt);
+  var pt2 = new THREE.PointLight(0x7ac8ff, 1.5, 15); pt2.position.set(-4, 0, 2); scene.add(pt2);
+
+  /* AirPods */
+  var podL = buildAirPodPro(0xfafafa);
+  podL.position.set(-1.5, 0.7, 0); podL.rotation.set(0.05, 0.35, -0.38);
+  var podR = buildAirPodPro(0xfafafa);
+  podR.position.set(1.5, 0.7, 0); podR.rotation.set(0.05, -0.35, 0.38);
+  scene.add(podL, podR);
+
+  /* Boîtier */
+  var caseG = buildCase();
+  caseG.position.set(0, -1.3, 0); caseG.rotation.x = 0.1;
+  caseG.scale.set(0.9, 0.9, 0.9);
+  scene.add(caseG);
+
+  /* Particules */
+  scene.add(buildParticles(350, 12, 0x0071e3));
+  scene.add(buildParticles(180, 9, 0x7ac8ff));
+
+  /* Lumière mobile */
+  var mLight = new THREE.PointLight(0x2997ff, 2.5, 10);
+  scene.add(mLight);
+
+  function resize() {
+    var w = container.clientWidth, h = container.clientHeight;
+    camera.aspect = w/h; camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+  }
+  resize(); window.addEventListener('resize', resize);
+
+  var mx = 0, my = 0;
+  document.addEventListener('mousemove', function(e) {
+    mx = (e.clientX/window.innerWidth - 0.5)*2;
+    my = (e.clientY/window.innerHeight - 0.5)*2;
+  });
+
+  var t = 0;
+  (function loop() {
+    requestAnimationFrame(loop);
+    t += 0.012;
+
+    podL.rotation.y = 0.35 + Math.sin(t) * 0.35 + mx * 0.12;
+    podL.rotation.x = 0.05 + Math.sin(t*0.7)*0.1 - my*0.04;
+    podL.position.y = 0.7 + Math.sin(t*0.8)*0.15;
+
+    podR.rotation.y = -0.35 + Math.sin(t+1)*0.35 + mx*0.12;
+    podR.rotation.x = 0.05 + Math.sin(t*0.7+1)*0.1 - my*0.04;
+    podR.position.y = 0.7 + Math.sin(t*0.8+1.2)*0.15;
+
+    caseG.rotation.y = Math.sin(t*0.4)*0.25 + mx*0.08;
+    caseG.position.y = -1.3 + Math.sin(t*0.5)*0.06;
+
+    mLight.position.set(Math.sin(t*0.9)*4, Math.cos(t*0.6)*3, Math.sin(t*1.1)*2 + 3);
+
+    scene.children.forEach(function(c) {
+      if (c instanceof THREE.Points) { c.rotation.y += 0.0008; c.rotation.x += 0.0004; }
     });
 
-    // Scroll reveal
-    const reveals = document.querySelectorAll('.reveal');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.1 });
-    reveals.forEach(el => observer.observe(el));
+    renderer.render(scene, camera);
+  })();
+})();
 
-    // Smooth buy button
-    document.querySelectorAll('.btn-buy').forEach(btn => {
-      btn.addEventListener('click', () => {
-        btn.textContent = '✓ Ajouté !';
-        btn.style.background = '#32d74b';
-        setTimeout(() => {
-          btn.textContent = 'Acheter';
-          btn.style.background = '';
-        }, 2000);
-      });
-    });
-  </script>
+/* ════════ FEATURES SCENE ════════ */
+(function() {
+  var canvas = document.getElementById('canvas-features');
+  if (!canvas) return;
+  var renderer = makeRenderer(canvas, 0x1d1d1f, false);
+  renderer.setClearColor(0x1d1d1f);
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
+  camera.position.set(0, 0, 6);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.35));
+  var d = new THREE.DirectionalLight(0xffffff, 1.6); d.position.set(4, 6, 4); scene.add(d);
+  var pt1 = new THREE.PointLight(0x2997ff, 3.5, 14); pt1.position.set(-3, 2, 3); scene.add(pt1);
+  var pt2 = new THREE.PointLight(0xbf5af2, 2.5, 11); pt2.position.set(3, -2, 2); scene.add(pt2);
+  var pt3 = new THREE.PointLight(0x34c759, 1.5, 8); pt3.position.set(0, -4, 1); scene.add(pt3);
+
+  var pod = buildAirPodPro(0xf5f5f7);
+  pod.scale.set(1.5, 1.5, 1.5);
+  scene.add(pod);
+
+  /* Anneaux orbitaux */
+  var rings = [];
+  [[1.9, 0x2997ff, 0.3], [2.6, 0xbf5af2, 0.2], [3.3, 0x34c759, 0.12]].forEach(function(r) {
+    var rg = new THREE.TorusGeometry(r[0], 0.01, 16, 128);
+    var rm = new THREE.Mesh(rg, new THREE.MeshBasicMaterial({ color: r[1], transparent: true, opacity: r[2] }));
+    scene.add(rm); rings.push(rm);
+  });
+
+  scene.add(buildParticles(500, 10, 0x2997ff));
+  scene.add(buildParticles(200, 8, 0xbf5af2));
+
+  function resize() {
+    var w = canvas.parentElement.clientWidth, h = canvas.parentElement.clientHeight;
+    camera.aspect = w/h; camera.updateProjectionMatrix(); renderer.setSize(w, h);
+  }
+  resize(); window.addEventListener('resize', resize);
+
+  var t = 0;
+  (function loop() {
+    requestAnimationFrame(loop);
+    t += 0.01;
+    pod.rotation.y = t * 0.55;
+    pod.rotation.x = Math.sin(t*0.5)*0.22;
+    pod.position.y = Math.sin(t*0.7)*0.18;
+
+    rings[0].rotation.x = t*0.3; rings[0].rotation.z = t*0.18;
+    rings[1].rotation.y = t*0.22; rings[1].rotation.x = t*0.15;
+    rings[2].rotation.z = t*0.28; rings[2].rotation.y = -t*0.12;
+
+    pt1.position.set(Math.sin(t)*5, Math.cos(t*0.7)*3, 3);
+    pt2.position.set(Math.cos(t*0.8)*4, Math.sin(t*0.6)*3, 2);
+    pt3.position.set(Math.sin(t*1.2)*3, -4+Math.cos(t)*2, 2);
+
+    renderer.render(scene, camera);
+  })();
+})();
+
+/* ════════ MINI SCÈNES MODÈLES ════════ */
+function miniScene(id, buildFn, bg, lightCol) {
+  var canvas = document.getElementById(id);
+  if (!canvas) return;
+  var wrap = canvas.parentElement;
+  var renderer = makeRenderer(canvas, bg, false);
+  renderer.setClearColor(bg);
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(40, wrap.clientWidth/wrap.clientHeight, 0.1, 50);
+  camera.position.set(0, 0.5, 5.8);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+  var d = new THREE.DirectionalLight(0xffffff, 1.2); d.position.set(3,5,4); scene.add(d);
+  var pt = new THREE.PointLight(lightCol, 2.5, 12); pt.position.set(-2,2,3); scene.add(pt);
+  var pt2 = new THREE.PointLight(lightCol, 1.5, 8); pt2.position.set(2,-1,2); scene.add(pt2);
+
+  var obj = buildFn();
+  obj.scale.set(1.05, 1.05, 1.05);
+  scene.add(obj);
+  scene.add(buildParticles(100, 6, lightCol));
+
+  function resize() {
+    var w = wrap.clientWidth, h = wrap.clientHeight;
+    camera.aspect = w/h; camera.updateProjectionMatrix(); renderer.setSize(w, h);
+  }
+  resize(); window.addEventListener('resize', resize);
+
+  var t = 0, hov = false;
+  wrap.parentElement.addEventListener('mouseenter', function(){ hov=true; });
+  wrap.parentElement.addEventListener('mouseleave', function(){ hov=false; });
+
+  (function loop() {
+    requestAnimationFrame(loop);
+    t += hov ? 0.022 : 0.008;
+    obj.rotation.y = t;
+    obj.position.y = Math.sin(t*0.9)*0.1;
+    renderer.render(scene, camera);
+  })();
+}
+
+miniScene('c1', function() { return buildAirPodPro(0xfafafa); }, 0xf2f6fa, 0x0071e3);
+
+miniScene('c2', function() {
+  var g = new THREE.Group();
+  var l = buildAirPodPro(0xfafafa); l.position.set(-0.95,0.3,0); l.rotation.z=-0.32; l.rotation.y=0.25;
+  var r = buildAirPodPro(0xfafafa); r.position.set(0.95,0.3,0); r.rotation.z=0.32; r.rotation.y=-0.25;
+  g.add(l, r);
+  return g;
+}, 0xf5f0ff, 0x7b2fff);
+
+miniScene('c3', function() {
+  var g = new THREE.Group();
+  var mat = new THREE.MeshPhysicalMaterial({ color: 0xf2f2f5, metalness: 0.08, roughness: 0.18, clearcoat: 1.0 });
+  var matD = new THREE.MeshStandardMaterial({ color: 0x333336, roughness: 0.4 });
+
+  var curve = new THREE.QuadraticBezierCurve3(
+    new THREE.Vector3(-1.45,0,0), new THREE.Vector3(0,1.65,0), new THREE.Vector3(1.45,0,0)
+  );
+  var pts = curve.getPoints(80);
+  var tube = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 80, 0.075, 12, false);
+  g.add(new THREE.Mesh(tube, mat));
+
+  [-1.45, 1.45].forEach(function(x) {
+    var cush = new THREE.SphereGeometry(0.58, 32, 32); cush.scale(1, 0.65, 0.58);
+    var cm = new THREE.Mesh(cush, mat); cm.position.set(x, -0.2, 0); cm.castShadow = true; g.add(cm);
+    var gg = new THREE.CircleGeometry(0.3, 32);
+    var gm = new THREE.Mesh(gg, matD); gm.position.set(x, -0.2, 0.32); g.add(gm);
+  });
+
+  var crown = new THREE.Mesh(new THREE.CylinderGeometry(0.11,0.11,0.2,20), matD);
+  crown.position.set(0,1.18,0); crown.rotation.z = Math.PI/2; g.add(crown);
+
+  g.position.y = -0.35;
+  return g;
+}, 0xf0f8f2, 0x34c759);
+
+/* ════════ EQUALIZER ════════ */
+var eq = document.getElementById('eq-bars');
+[30,55,90,130,170,210,180,145,110,80,120,165,135,95,60,40,70,105,148,190].forEach(function(h, i) {
+  var b = document.createElement('div');
+  b.className = 'eq-bar';
+  b.style.cssText = 'height:'+h+'px;animation-delay:'+(i*0.062)+'s;animation-duration:'+(0.65+Math.random()*0.85)+'s';
+  eq.appendChild(b);
+});
+
+/* ════════ GSAP ════════ */
+gsap.registerPlugin(ScrollTrigger);
+
+gsap.set(['.hero-eyebrow','.hero-title','.hero-sub','.hero-btns','#canvas-container','.scroll-hint'], { y: 35, opacity: 0 });
+gsap.timeline({ delay: 0.3 })
+  .to('.hero-eyebrow',      { y:0, opacity:1, duration:0.8, ease:'power3.out' })
+  .to('.hero-title',        { y:0, opacity:1, duration:0.9, ease:'power3.out' }, '-=0.5')
+  .to('.hero-sub',          { y:0, opacity:1, duration:0.8, ease:'power3.out' }, '-=0.5')
+  .to('.hero-btns',         { y:0, opacity:1, duration:0.7, ease:'power3.out' }, '-=0.4')
+  .to('#canvas-container',  { y:0, opacity:1, duration:1.1, ease:'power3.out' }, '-=0.5')
+  .to('.scroll-hint',       { opacity:1, duration:0.6 }, '-=0.2');
+
+document.querySelectorAll('.feature-item').forEach(function(el) {
+  gsap.to(el, {
+    opacity:1, x:0, duration:0.9, ease:'power3.out',
+    scrollTrigger: { trigger:el, start:'top 82%', toggleActions:'play none none reverse' }
+  });
+});
+
+document.querySelectorAll('.model-card').forEach(function(el, i) {
+  gsap.to(el, {
+    opacity:1, y:0, duration:0.85, delay:i*0.14, ease:'back.out(1.3)',
+    scrollTrigger: { trigger:'.models-grid', start:'top 78%', toggleActions:'play none none reverse' }
+  });
+});
+
+gsap.from('.models-header', { opacity:0, y:30, duration:0.8, ease:'power3.out',
+  scrollTrigger: { trigger:'.models-header', start:'top 85%' }
+});
+gsap.from('.sound-text', { opacity:0, x:-50, duration:1, ease:'power3.out',
+  scrollTrigger: { trigger:'.sound-inner', start:'top 78%' }
+});
+gsap.from('.sound-viz', { opacity:0, x:50, duration:1, ease:'power3.out',
+  scrollTrigger: { trigger:'.sound-inner', start:'top 78%' }
+});
+gsap.from('.cta-section .section-label, .cta-section .section-title, .cta-section .sub, .btn-white', {
+  opacity:0, y:40, duration:0.9, stagger:0.13, ease:'power3.out',
+  scrollTrigger: { trigger:'.cta-section', start:'top 80%' }
+});
+
+/* Compteurs stats */
+document.querySelectorAll('[data-val]').forEach(function(el) {
+  var target = parseInt(el.getAttribute('data-val'));
+  var suffix = el.querySelector('span') ? el.querySelector('span').outerHTML : '';
+  gsap.to({ val: 0 }, {
+    val: target, duration: 2.5, ease: 'power2.out',
+    scrollTrigger: { trigger: el, start: 'top 85%' },
+    onUpdate: function() {
+      el.innerHTML = Math.round(this.targets()[0].val) + suffix;
+    }
+  });
+});
+
+/* ════════ BUY BUTTON ════════ */
+function addCart(btn) {
+  btn.textContent = '✓ Ajouté !';
+  btn.style.background = '#34c759';
+  gsap.fromTo(btn, { scale: 0.88 }, { scale: 1, duration: 0.4, ease: 'back.out(2)' });
+  setTimeout(function() { btn.textContent = 'Acheter'; btn.style.background = ''; }, 2200);
+}
+</script>
 </body>
 </html>
