@@ -3,250 +3,285 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AirPods Pro — Expérience Sonore</title>
+  <title>AirPods Pro — Son d'exception</title>
 
-  <!-- Three.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <!-- GSAP + ScrollTrigger -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
   <style>
-    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-    :root {
-      --black: #1d1d1f;
-      --gray: #6e6e73;
-      --light: #f5f5f7;
-      --white: #ffffff;
-      --blue: #0071e3;
-      --blue-light: #147ce5;
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    :root{
+      --black:#1d1d1f;--gray:#6e6e73;--white:#ffffff;--light:#f5f5f7;
+      --blue:#0071e3;--blue2:#147ce5;
     }
-    html { scroll-behavior: smooth; }
-    body {
-      background: #fff;
-      color: var(--black);
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
-      overflow-x: hidden;
+    html{scroll-behavior:smooth;}
+    body{
+      background:#fff;color:var(--black);overflow-x:hidden;
+      font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;
     }
 
-    /* NAV */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-      background: rgba(255,255,255,0.88);
-      backdrop-filter: saturate(180%) blur(20px);
-      border-bottom: 1px solid rgba(0,0,0,0.08);
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 0 48px; height: 52px;
+    /* ─── NAV ─── */
+    nav{
+      position:fixed;top:0;left:0;right:0;z-index:999;
+      height:52px;display:flex;align-items:center;justify-content:space-between;
+      padding:0 40px;
+      background:rgba(255,255,255,0.85);
+      backdrop-filter:saturate(180%) blur(20px);
+      border-bottom:1px solid rgba(0,0,0,0.08);
     }
-    .nav-logo { font-size: 1.4rem; font-weight: 700; color: var(--black); }
-    .nav-links { display: flex; gap: 32px; list-style: none; }
-    .nav-links a { font-size: 0.82rem; color: var(--gray); text-decoration: none; transition: color .2s; }
-    .nav-links a:hover { color: var(--black); }
-    .nav-cta {
-      background: var(--blue); color: #fff; font-size: 0.82rem; font-weight: 600;
-      padding: 8px 18px; border-radius: 20px; text-decoration: none; transition: background .2s;
+    .nav-logo{font-size:1.3rem;font-weight:700;letter-spacing:-.3px;}
+    nav ul{display:flex;gap:28px;list-style:none;}
+    nav ul a{font-size:.82rem;color:var(--gray);text-decoration:none;transition:color .2s;}
+    nav ul a:hover{color:var(--black);}
+    .nav-buy{
+      background:var(--blue);color:#fff;font-size:.82rem;font-weight:600;
+      padding:7px 18px;border-radius:20px;text-decoration:none;transition:background .2s;
     }
-    .nav-cta:hover { background: var(--blue-light); }
+    .nav-buy:hover{background:var(--blue2);}
 
-    /* HERO */
-    .hero {
-      min-height: 100vh;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      text-align: center; padding: 100px 24px 60px; position: relative; overflow: hidden;
-      background: linear-gradient(180deg, #ffffff 0%, #f5f5f7 100%);
+    /* ─── INTRO ─── */
+    #intro{
+      height:100vh;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;text-align:center;
+      background:linear-gradient(180deg,#fff 0%,#f5f5f7 100%);
+      padding:80px 24px 40px;position:relative;overflow:hidden;
     }
-    .hero-eyebrow {
-      font-size: 0.78rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase;
-      color: var(--blue); margin-bottom: 18px; opacity: 0;
+    .intro-tag{
+      font-size:.75rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;
+      color:var(--blue);margin-bottom:20px;
     }
-    .hero-title {
-      font-size: clamp(3.5rem, 11vw, 8rem); font-weight: 800;
-      letter-spacing: -3px; line-height: 0.95; color: var(--black);
-      margin-bottom: 24px; opacity: 0;
+    #intro h1{
+      font-size:clamp(4rem,12vw,9rem);font-weight:800;
+      letter-spacing:-4px;line-height:.92;margin-bottom:24px;
     }
-    .hero-title span { color: var(--blue); }
-    .hero-sub {
-      font-size: clamp(1rem, 2.5vw, 1.3rem); color: var(--gray);
-      max-width: 520px; line-height: 1.6; margin-bottom: 44px; opacity: 0;
+    #intro h1 em{font-style:normal;color:var(--blue);}
+    #intro p{
+      font-size:clamp(1rem,2.5vw,1.25rem);color:var(--gray);
+      max-width:500px;line-height:1.65;margin-bottom:44px;
     }
-    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; opacity: 0; }
-    .btn-blue {
-      background: var(--blue); color: #fff; padding: 16px 36px; border-radius: 50px;
-      font-weight: 600; font-size: 1rem; text-decoration: none;
-      transition: all .3s; box-shadow: 0 4px 20px rgba(0,113,227,.3);
+    .intro-btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;}
+    .btn-primary{
+      background:var(--blue);color:#fff;padding:15px 34px;border-radius:50px;
+      font-weight:600;font-size:.95rem;text-decoration:none;
+      box-shadow:0 4px 18px rgba(0,113,227,.35);transition:all .3s;
     }
-    .btn-blue:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,113,227,.4); }
-    .btn-outline {
-      background: transparent; color: var(--blue); padding: 16px 36px; border-radius: 50px;
-      font-weight: 600; font-size: 1rem; text-decoration: none;
-      border: 1.5px solid var(--blue); transition: all .3s;
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,113,227,.45);}
+    .btn-ghost{
+      background:transparent;color:var(--blue);padding:15px 34px;border-radius:50px;
+      font-weight:600;font-size:.95rem;text-decoration:none;
+      border:1.5px solid var(--blue);transition:all .3s;
     }
-    .btn-outline:hover { background: rgba(0,113,227,.05); transform: translateY(-2px); }
+    .btn-ghost:hover{background:rgba(0,113,227,.06);transform:translateY(-2px);}
 
-    /* CANVAS HERO */
-    #canvas-container {
-      width: 100%; max-width: 700px; height: 500px;
-      margin: 0 auto; position: relative; opacity: 0;
+    .scroll-arrow{
+      position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+      display:flex;flex-direction:column;align-items:center;gap:8px;
+      color:var(--gray);font-size:.72rem;letter-spacing:2px;text-transform:uppercase;
+      animation:arrowBob 2s ease-in-out infinite;
     }
-    #canvas-container canvas { width: 100% !important; height: 100% !important; }
+    .arrow-svg{width:20px;height:20px;stroke:var(--gray);fill:none;stroke-width:2;}
+    @keyframes arrowBob{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(6px);}}
 
-    .scroll-hint {
-      margin-top: 40px; font-size: 0.75rem; color: var(--gray);
-      letter-spacing: 2px; text-transform: uppercase; opacity: 0;
-      display: flex; flex-direction: column; align-items: center; gap: 8px;
+    /* ─── SCROLL CANVAS SECTION ─── */
+    #canvas-section{
+      position:relative;
+      background:#fff;
     }
-    .scroll-line {
-      width: 1px; height: 40px;
-      background: linear-gradient(to bottom, var(--gray), transparent);
-      animation: scrollLine 2s ease-in-out infinite;
+    .canvas-sticky{
+      position:sticky;top:52px;height:calc(100vh - 52px);
+      display:flex;align-items:center;justify-content:center;
+      overflow:hidden;background:#fff;
     }
-    @keyframes scrollLine {
-      0%, 100% { transform: scaleY(1); opacity: 1; }
-      50% { transform: scaleY(0.3); opacity: 0.3; }
+    #airpods-canvas{
+      max-width:100%;max-height:100%;
+      display:block;
     }
-
-    /* SECTION BASE */
-    .section-label {
-      font-size: 0.72rem; font-weight: 700; letter-spacing: 4px; text-transform: uppercase;
-      color: var(--blue); margin-bottom: 14px;
-    }
-    .section-title {
-      font-size: clamp(2.2rem, 5vw, 3.8rem); font-weight: 800;
-      letter-spacing: -1.5px; line-height: 1.05; color: var(--black);
-    }
-    .section-title em { font-style: normal; color: var(--blue); }
-
-    /* FEATURES DARK */
-    .features-section {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 0;
-      background: var(--black); color: #fff;
-    }
-    .features-sticky {
-      position: sticky; top: 52px; height: calc(100vh - 52px); overflow: hidden;
-    }
-    #canvas-features { display: block; width: 100%; height: 100%; }
-
-    .features-scroll { padding: 80px 60px; }
-    .feature-item {
-      min-height: 60vh; display: flex; flex-direction: column; justify-content: center;
-      padding: 60px 0; border-bottom: 1px solid rgba(255,255,255,0.07);
-      opacity: 0; transform: translateX(40px);
-    }
-    .feature-item:last-child { border-bottom: none; }
-    .feature-num {
-      font-size: 0.7rem; font-weight: 700; letter-spacing: 3px;
-      color: rgba(255,255,255,0.3); margin-bottom: 16px; text-transform: uppercase;
-    }
-    .feature-item h3 {
-      font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 800;
-      letter-spacing: -1px; line-height: 1.05; margin-bottom: 18px;
-    }
-    .feature-item h3 span { color: #2997ff; }
-    .feature-item p { font-size: 1rem; color: rgba(255,255,255,0.5); line-height: 1.85; max-width: 420px; }
-    .feature-badges { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; }
-    .fbadge {
-      font-size: 0.73rem; font-weight: 600; padding: 6px 14px; border-radius: 20px;
-      background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.65);
+    .canvas-scroll-space{
+      height:600vh;
     }
 
-    /* MODELS */
-    .models-section { background: #f5f5f7; padding: 120px 48px; }
-    .models-header { text-align: center; margin-bottom: 80px; }
-    .models-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
-      max-width: 1200px; margin: 0 auto;
+    /* Textes qui apparaissent sur le canvas */
+    .canvas-overlay-texts{
+      position:absolute;inset:0;pointer-events:none;
     }
-    .model-card {
-      background: #fff; border-radius: 28px; overflow: hidden;
-      box-shadow: 0 4px 30px rgba(0,0,0,0.07);
-      transition: all .4s; cursor: pointer;
-      opacity: 0; transform: translateY(50px);
+    .cot{
+      position:absolute;left:50%;transform:translateX(-50%);
+      text-align:center;opacity:0;
+      transition:opacity .5s;
+      width:100%;padding:0 24px;
     }
-    .model-card:hover { transform: translateY(-8px) !important; box-shadow: 0 20px 60px rgba(0,0,0,0.14); }
-    .model-card.featured { border: 2px solid var(--blue); box-shadow: 0 8px 40px rgba(0,113,227,0.18); }
-    .model-canvas-wrap { height: 260px; position: relative; overflow: hidden; background: #fafafa; }
-    .model-canvas-wrap canvas { width: 100% !important; height: 100% !important; }
-    .featured-tag {
-      position: absolute; top: 14px; right: 14px; z-index: 10;
-      background: var(--blue); color: #fff; font-size: 0.68rem; font-weight: 700;
-      letter-spacing: 1px; text-transform: uppercase; padding: 5px 12px; border-radius: 20px;
+    .cot.t1{top:12%;}
+    .cot.t2{top:15%;}
+    .cot.t3{top:12%;}
+    .cot h2{
+      font-size:clamp(2rem,5vw,4rem);font-weight:800;
+      letter-spacing:-1.5px;color:var(--black);line-height:1.05;
     }
-    .model-body { padding: 26px 28px 30px; }
-    .model-body h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 6px; }
-    .model-body .desc { font-size: 0.87rem; color: var(--gray); line-height: 1.6; margin-bottom: 18px; }
-    .model-specs { list-style: none; margin-bottom: 22px; }
-    .model-specs li {
-      font-size: 0.84rem; color: var(--gray); padding: 6px 0;
-      border-bottom: 1px solid #f0f0f2; display: flex; align-items: center; gap: 8px;
-    }
-    .model-specs li:last-child { border-bottom: none; }
-    .model-specs li::before { content: '✓'; color: var(--blue); font-weight: 700; font-size: 0.78rem; }
-    .model-foot { display: flex; justify-content: space-between; align-items: center; }
-    .price { font-size: 1.65rem; font-weight: 800; color: var(--black); }
-    .price-sub { font-size: 0.75rem; color: var(--gray); margin-top: 2px; }
-    .btn-card {
-      background: var(--blue); color: #fff; border: none;
-      padding: 12px 22px; border-radius: 50px; font-weight: 700;
-      font-size: 0.88rem; cursor: pointer; transition: all .25s;
-    }
-    .btn-card:hover { background: var(--blue-light); transform: scale(1.05); }
-
-    /* SOUND */
-    .sound-outer { padding: 120px 48px; background: #fff; }
-    .sound-inner {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 100px;
-      align-items: center; max-width: 1200px; margin: 0 auto;
-    }
-    .sound-text .section-title { margin: 12px 0 20px; }
-    .sound-text p { font-size: 0.95rem; color: var(--gray); line-height: 1.9; margin-bottom: 12px; }
-    .stats-row { display: flex; gap: 48px; margin-top: 40px; }
-    .stat .num {
-      font-size: 3rem; font-weight: 800; letter-spacing: -1.5px; color: var(--black);
-    }
-    .stat .num span { font-size: 1.3rem; vertical-align: super; }
-    .stat .lbl { font-size: 0.78rem; color: var(--gray); margin-top: 4px; }
-    .sound-viz { display: flex; align-items: center; justify-content: center; height: 280px; }
-    #eq-bars { display: flex; align-items: flex-end; gap: 7px; height: 220px; }
-    .eq-bar {
-      width: 13px; border-radius: 7px;
-      background: linear-gradient(to top, var(--blue), #7ac8ff);
-      animation: eqBounce 1s ease-in-out infinite;
-    }
-    @keyframes eqBounce {
-      0%,100% { transform: scaleY(0.25); }
-      50% { transform: scaleY(1); }
+    .cot h2 em{font-style:normal;color:var(--blue);}
+    .cot p{
+      font-size:clamp(.9rem,1.8vw,1.1rem);color:var(--gray);
+      max-width:480px;margin:14px auto 0;line-height:1.7;
     }
 
-    /* CTA */
-    .cta-section {
-      background: var(--black); color: #fff; text-align: center; padding: 140px 48px;
+    /* ─── FEATURES 3D SECTION ─── */
+    #features{
+      background:#1d1d1f;color:#fff;
+      display:grid;grid-template-columns:1fr 1fr;
     }
-    .cta-section .section-label { color: #2997ff; }
-    .cta-section .section-title { color: #fff; margin: 14px 0 20px; }
-    .cta-section .sub { font-size: 1.05rem; color: rgba(255,255,255,0.5); margin-bottom: 44px; }
-    .btn-white {
-      background: #fff; color: var(--black); padding: 18px 48px; border-radius: 50px;
-      font-weight: 700; font-size: 1rem; text-decoration: none;
-      transition: all .3s; display: inline-block; box-shadow: 0 4px 24px rgba(255,255,255,0.12);
+    .feat-3d{
+      position:sticky;top:52px;height:calc(100vh - 52px);
+      display:flex;align-items:center;justify-content:center;
     }
-    .btn-white:hover { transform: translateY(-3px); box-shadow: 0 10px 40px rgba(255,255,255,0.22); }
+    #feat-canvas{display:block;width:100%;height:100%;}
+    .feat-list{padding:100px 60px;}
+    .feat-item{
+      min-height:70vh;display:flex;flex-direction:column;justify-content:center;
+      padding:60px 0;border-bottom:1px solid rgba(255,255,255,.07);
+    }
+    .feat-item:last-child{border-bottom:none;}
+    .feat-num{
+      font-size:.7rem;letter-spacing:3px;font-weight:700;
+      color:rgba(255,255,255,.3);margin-bottom:18px;text-transform:uppercase;
+    }
+    .feat-item h3{
+      font-size:clamp(2rem,4vw,3.2rem);font-weight:800;
+      letter-spacing:-1.2px;line-height:1.05;margin-bottom:18px;
+    }
+    .feat-item h3 b{color:#2997ff;font-weight:800;}
+    .feat-item p{font-size:1rem;color:rgba(255,255,255,.5);line-height:1.85;max-width:400px;}
+    .feat-tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px;}
+    .ftag{
+      font-size:.72rem;font-weight:600;padding:6px 14px;border-radius:20px;
+      background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);
+    }
 
-    /* FOOTER */
-    footer {
-      background: #f5f5f7; border-top: 1px solid #e2e2e7;
-      padding: 36px 48px; text-align: center;
-      font-size: 0.8rem; color: var(--gray); line-height: 1.8;
+    /* ─── MODELS ─── */
+    #models{background:var(--light);padding:120px 48px;}
+    .sec-head{text-align:center;margin-bottom:80px;}
+    .sec-label{
+      font-size:.72rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;
+      color:var(--blue);margin-bottom:14px;
+    }
+    .sec-title{
+      font-size:clamp(2.2rem,5vw,4rem);font-weight:800;
+      letter-spacing:-1.5px;color:var(--black);line-height:1.05;
+    }
+    .sec-title em{font-style:normal;color:var(--blue);}
+
+    .models-grid{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:22px;
+      max-width:1180px;margin:0 auto;
+    }
+    .mcard{
+      background:#fff;border-radius:28px;overflow:hidden;
+      box-shadow:0 4px 30px rgba(0,0,0,.07);
+      transition:all .4s;cursor:pointer;
+    }
+    .mcard:hover{transform:translateY(-8px);box-shadow:0 22px 60px rgba(0,0,0,.13);}
+    .mcard.hot{border:2px solid var(--blue);box-shadow:0 6px 36px rgba(0,113,227,.18);}
+    .mcanvas-wrap{height:260px;position:relative;background:#fafafa;overflow:hidden;}
+    .mcanvas-wrap canvas{width:100%!important;height:100%!important;}
+    .hot-tag{
+      position:absolute;top:14px;right:14px;z-index:5;
+      background:var(--blue);color:#fff;font-size:.68rem;font-weight:700;
+      letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:20px;
+    }
+    .mbody{padding:26px 28px 30px;}
+    .mbody h3{font-size:1.2rem;font-weight:700;margin-bottom:6px;}
+    .mbody .mdesc{font-size:.87rem;color:var(--gray);line-height:1.6;margin-bottom:18px;}
+    .mspecs{list-style:none;margin-bottom:22px;}
+    .mspecs li{
+      font-size:.84rem;color:var(--gray);padding:6px 0;
+      border-bottom:1px solid #f0f0f2;display:flex;align-items:center;gap:8px;
+    }
+    .mspecs li:last-child{border-bottom:none;}
+    .mspecs li::before{content:'✓';color:var(--blue);font-weight:700;font-size:.78rem;}
+    .mfoot{display:flex;justify-content:space-between;align-items:center;}
+    .mprice{font-size:1.6rem;font-weight:800;}
+    .msub{font-size:.73rem;color:var(--gray);margin-top:2px;}
+    .mbuy{
+      background:var(--blue);color:#fff;border:none;
+      padding:11px 22px;border-radius:50px;font-weight:700;
+      font-size:.88rem;cursor:pointer;transition:all .25s;
+    }
+    .mbuy:hover{background:var(--blue2);transform:scale(1.05);}
+
+    /* ─── STATS BAND ─── */
+    #stats{
+      background:var(--black);color:#fff;
+      padding:100px 48px;
+      display:grid;grid-template-columns:repeat(4,1fr);gap:40px;
+      text-align:center;
+    }
+    .sstat .snum{
+      font-size:clamp(2.5rem,6vw,4.5rem);font-weight:800;
+      letter-spacing:-2px;
+      background:linear-gradient(135deg,#fff,rgba(255,255,255,.6));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    }
+    .sstat .ssuf{font-size:1.8rem;vertical-align:super;}
+    .sstat .slbl{font-size:.82rem;color:rgba(255,255,255,.45);margin-top:8px;letter-spacing:1px;}
+
+    /* ─── SOUND ─── */
+    #sound{padding:120px 48px;background:#fff;}
+    .sound-inner{
+      display:grid;grid-template-columns:1fr 1fr;gap:100px;
+      align-items:center;max-width:1180px;margin:0 auto;
+    }
+    .st p{font-size:.95rem;color:var(--gray);line-height:1.9;margin-top:20px;}
+    .eqwrap{
+      height:300px;display:flex;align-items:center;justify-content:center;
+    }
+    #eq{display:flex;align-items:flex-end;gap:7px;height:240px;}
+    .eqb{
+      width:14px;border-radius:7px;
+      background:linear-gradient(to top,var(--blue),#7ac8ff);
+      animation:eqb 1s ease-in-out infinite;
+    }
+    @keyframes eqb{0%,100%{transform:scaleY(.2);}50%{transform:scaleY(1);}}
+
+    /* ─── CTA ─── */
+    #cta{
+      background:var(--black);color:#fff;
+      padding:140px 48px;text-align:center;
+      position:relative;overflow:hidden;
+    }
+    #cta::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse at 50% 50%,rgba(0,113,227,.15) 0%,transparent 65%);
+    }
+    .cta-inner{position:relative;z-index:1;}
+    #cta .sec-label{color:#2997ff;}
+    #cta .sec-title{color:#fff;margin:14px 0 18px;}
+    #cta .csub{font-size:1.05rem;color:rgba(255,255,255,.5);margin-bottom:44px;}
+    .btn-wh{
+      background:#fff;color:var(--black);padding:18px 48px;border-radius:50px;
+      font-weight:700;font-size:1rem;text-decoration:none;display:inline-block;
+      box-shadow:0 4px 24px rgba(255,255,255,.12);transition:all .3s;
+    }
+    .btn-wh:hover{transform:translateY(-3px);box-shadow:0 10px 40px rgba(255,255,255,.22);}
+
+    /* ─── FOOTER ─── */
+    footer{
+      background:var(--light);border-top:1px solid #e0e0e5;
+      padding:36px 48px;text-align:center;
+      font-size:.8rem;color:var(--gray);line-height:1.8;
     }
 
-    /* RESPONSIVE */
-    @media(max-width: 900px) {
-      .features-section { grid-template-columns: 1fr; }
-      .features-sticky { display: none; }
-      .models-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
-      .sound-inner { grid-template-columns: 1fr; gap: 60px; }
-      nav { padding: 0 20px; }
-      .nav-links { display: none; }
-      .models-section, .sound-outer, .cta-section { padding: 80px 24px; }
+    /* ─── RESPONSIVE ─── */
+    @media(max-width:900px){
+      #features{grid-template-columns:1fr;}
+      .feat-3d{display:none;}
+      .models-grid{grid-template-columns:1fr;max-width:400px;margin:0 auto;}
+      .sound-inner{grid-template-columns:1fr;gap:60px;}
+      #stats{grid-template-columns:repeat(2,1fr);}
+      nav ul{display:none;}
+      nav{padding:0 20px;}
+    }
+    @media(max-width:480px){
+      #stats{grid-template-columns:1fr 1fr;}
+      .feat-list{padding:60px 24px;}
     }
   </style>
 </head>
@@ -255,660 +290,581 @@
 <!-- NAV -->
 <nav>
   <div class="nav-logo">AirPods</div>
-  <ul class="nav-links">
+  <ul>
     <li><a href="#features">Fonctions</a></li>
     <li><a href="#models">Modèles</a></li>
-    <li><a href="#son">Son</a></li>
+    <li><a href="#sound">Son</a></li>
   </ul>
-  <a href="#models" class="nav-cta">Acheter</a>
+  <a href="#models" class="nav-buy">Acheter</a>
 </nav>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-eyebrow">Nouveau · 2024</div>
-  <h1 class="hero-title">AirPods<br><span>Pro</span></h1>
-  <p class="hero-sub">Audio spatial adaptatif. Réduction de bruit 2× plus puissante. Une expérience sonore entièrement réinventée.</p>
-  <div class="hero-btns">
-    <a href="#models" class="btn-blue">Voir les modèles</a>
-    <a href="#features" class="btn-outline">Découvrir</a>
+<!-- INTRO -->
+<section id="intro">
+  <div class="intro-tag">Nouveau — 2024</div>
+  <h1>AirPods<br><em>Pro</em></h1>
+  <p>Audio spatial adaptatif. Réduction de bruit 2× plus puissante. Conçus pour aller au-delà du son.</p>
+  <div class="intro-btns">
+    <a href="#models" class="btn-primary">Voir les modèles</a>
+    <a href="#canvas-section" class="btn-ghost">Découvrir</a>
   </div>
-  <div id="canvas-container"></div>
-  <div class="scroll-hint">
+  <div class="scroll-arrow">
     <span>Défiler</span>
-    <div class="scroll-line"></div>
+    <svg class="arrow-svg" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
   </div>
 </section>
 
-<!-- FEATURES -->
-<section class="features-section" id="features">
-  <div class="features-sticky">
-    <canvas id="canvas-features"></canvas>
+<!-- CANVAS SCROLL SECTION -->
+<div id="canvas-section">
+  <div class="canvas-scroll-space">
+    <div class="canvas-sticky">
+      <canvas id="airpods-canvas"></canvas>
+      <div class="canvas-overlay-texts">
+        <div class="cot t1" id="cot1">
+          <h2>Silence<br><em>absolu.</em></h2>
+          <p>La puce H2 supprime jusqu'à 97 % du bruit ambiant, deux fois plus que la génération précédente.</p>
+        </div>
+        <div class="cot t2" id="cot2">
+          <h2>Son<br><em>immersif.</em></h2>
+          <p>L'audio spatial personnalisé crée un environnement sonore tridimensionnel unique à chaque écoute.</p>
+        </div>
+        <div class="cot t3" id="cot3">
+          <h2><em>30h</em><br>d'autonomie.</h2>
+          <p>5 minutes suffisent pour 1 heure de musique. Recharge MagSafe intégrée.</p>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="features-scroll">
-    <div class="feature-item">
-      <div class="feature-num">01 — Réduction de bruit</div>
-      <h3>Silence<br><span>absolu</span></h3>
-      <p>La puce H2 analyse ton environnement 48 000 fois par seconde et supprime jusqu'à 97 % du bruit ambiant. Métro, open space, avion — plus rien ne te distrait.</p>
-      <div class="feature-badges">
-        <span class="fbadge">Puce H2</span>
-        <span class="fbadge">−29 dB</span>
-        <span class="fbadge">Adaptatif</span>
+</div>
+
+<!-- FEATURES 3D -->
+<section id="features">
+  <div class="feat-3d">
+    <canvas id="feat-canvas"></canvas>
+  </div>
+  <div class="feat-list">
+    <div class="feat-item">
+      <div class="feat-num">01 — Réduction de bruit</div>
+      <h3>Silence<br><b>absolu</b></h3>
+      <p>48 000 analyses acoustiques par seconde. La puce H2 identifie et neutralise chaque fréquence indésirable avant qu'elle n'atteigne tes oreilles.</p>
+      <div class="feat-tags">
+        <span class="ftag">Puce H2</span><span class="ftag">−29 dB</span><span class="ftag">Adaptatif</span>
       </div>
     </div>
-    <div class="feature-item">
-      <div class="feature-num">02 — Audio Spatial</div>
-      <h3>Son<br><span>immersif</span></h3>
-      <p>L'audio spatial personnalisé cartographie la forme de tes oreilles pour créer un son tridimensionnel unique. Les films et la musique t'entourent de toutes parts.</p>
-      <div class="feature-badges">
-        <span class="fbadge">Dolby Atmos</span>
-        <span class="fbadge">360°</span>
-        <span class="fbadge">Spatial Audio</span>
+    <div class="feat-item">
+      <div class="feat-num">02 — Audio Spatial</div>
+      <h3>Son<br><b>immersif</b></h3>
+      <p>L'audio spatial personnalisé utilise la caméra TrueDepth pour cartographier la forme de tes oreilles et créer un son tridimensionnel unique.</p>
+      <div class="feat-tags">
+        <span class="ftag">Dolby Atmos</span><span class="ftag">360°</span><span class="ftag">Spatial Audio</span>
       </div>
     </div>
-    <div class="feature-item">
-      <div class="feature-num">03 — Autonomie</div>
-      <h3><span>30h</span><br>d'écoute</h3>
-      <p>6h en écoute continue avec ANC activé. 30h au total avec le boîtier MagSafe. Cinq minutes de charge suffisent pour une heure de musique.</p>
-      <div class="feature-badges">
-        <span class="fbadge">MagSafe</span>
-        <span class="fbadge">USB-C</span>
-        <span class="fbadge">Recharge rapide</span>
+    <div class="feat-item">
+      <div class="feat-num">03 — Autonomie</div>
+      <h3><b>30h</b><br>continues</h3>
+      <p>6h d'écoute active avec ANC. 30h au total avec le boîtier MagSafe. La recharge rapide change tout : 5 min = 1h.</p>
+      <div class="feat-tags">
+        <span class="ftag">MagSafe</span><span class="ftag">USB-C</span><span class="ftag">Recharge 5 min</span>
       </div>
     </div>
-    <div class="feature-item">
-      <div class="feature-num">04 — Confort</div>
-      <h3>Conçus<br>pour <span>toi</span></h3>
-      <p>Quatre tailles d'embouts en silicone pour un ajustement parfait. Résistance IPX4 à la sueur et aux éclaboussures. Contrôle tactile intuitif sur la tige.</p>
-      <div class="feature-badges">
-        <span class="fbadge">IPX4</span>
-        <span class="fbadge">4 tailles</span>
-        <span class="fbadge">Tactile</span>
+    <div class="feat-item">
+      <div class="feat-num">04 — Confort</div>
+      <h3>Conçus<br><b>pour toi</b></h3>
+      <p>4 tailles d'embouts en silicone. Résistance IPX4 certifiée. Contrôle tactile précis. Ajustement parfait pour des heures d'écoute sans fatigue.</p>
+      <div class="feat-tags">
+        <span class="ftag">IPX4</span><span class="ftag">4 tailles</span><span class="ftag">Tactile</span>
       </div>
     </div>
   </div>
 </section>
 
 <!-- MODELS -->
-<section class="models-section" id="models">
-  <div class="models-header">
-    <div class="section-label">Gamme complète</div>
-    <h2 class="section-title">Choisis ton <em>modèle</em></h2>
+<section id="models">
+  <div class="sec-head">
+    <div class="sec-label">Gamme complète</div>
+    <h2 class="sec-title">Choisis ton <em>modèle</em></h2>
   </div>
   <div class="models-grid">
-    <div class="model-card">
-      <div class="model-canvas-wrap"><canvas id="c1"></canvas></div>
-      <div class="model-body">
+    <div class="mcard">
+      <div class="mcanvas-wrap"><canvas id="mc1"></canvas></div>
+      <div class="mbody">
         <h3>AirPods 4</h3>
-        <p class="desc">La qualité Apple au quotidien, sans compromis sur le son.</p>
-        <ul class="model-specs">
+        <p class="mdesc">Qualité Apple au quotidien, sans compromis.</p>
+        <ul class="mspecs">
           <li>Son haute fidélité</li>
           <li>Mode transparence</li>
           <li>24h autonomie totale</li>
           <li>Résistance sueur</li>
         </ul>
-        <div class="model-foot">
-          <div>
-            <div class="price">149 €</div>
-            <div class="price-sub">Ou 12,41 €/mois</div>
-          </div>
-          <button class="btn-card" onclick="addCart(this)">Acheter</button>
+        <div class="mfoot">
+          <div><div class="mprice">149 €</div><div class="msub">Ou 12,41 €/mois</div></div>
+          <button class="mbuy" onclick="addCart(this)">Acheter</button>
         </div>
       </div>
     </div>
-    <div class="model-card featured">
-      <div class="model-canvas-wrap">
-        <span class="featured-tag">Best-seller</span>
-        <canvas id="c2"></canvas>
+    <div class="mcard hot">
+      <div class="mcanvas-wrap">
+        <span class="hot-tag">Best-seller</span>
+        <canvas id="mc2"></canvas>
       </div>
-      <div class="model-body">
+      <div class="mbody">
         <h3>AirPods Pro 2</h3>
-        <p class="desc">L'expérience sonore absolue. ANC, spatial audio et puce H2.</p>
-        <ul class="model-specs">
+        <p class="mdesc">L'expérience sonore absolue. Puce H2, ANC et spatial audio.</p>
+        <ul class="mspecs">
           <li>ANC 2× plus puissant</li>
           <li>Audio Spatial Adaptatif</li>
           <li>30h autonomie totale</li>
           <li>Contrôle tactile avancé</li>
-          <li>IPX4 sport ready</li>
+          <li>IPX4 certifié</li>
         </ul>
-        <div class="model-foot">
-          <div>
-            <div class="price">279 €</div>
-            <div class="price-sub">Ou 23,25 €/mois</div>
-          </div>
-          <button class="btn-card" onclick="addCart(this)">Acheter</button>
+        <div class="mfoot">
+          <div><div class="mprice">279 €</div><div class="msub">Ou 23,25 €/mois</div></div>
+          <button class="mbuy" onclick="addCart(this)">Acheter</button>
         </div>
       </div>
     </div>
-    <div class="model-card">
-      <div class="model-canvas-wrap"><canvas id="c3"></canvas></div>
-      <div class="model-body">
+    <div class="mcard">
+      <div class="mcanvas-wrap"><canvas id="mc3"></canvas></div>
+      <div class="mbody">
         <h3>AirPods Max</h3>
-        <p class="desc">Le casque over-ear premium au son d'exception.</p>
-        <ul class="model-specs">
+        <p class="mdesc">Le casque over-ear premium au son d'exception.</p>
+        <ul class="mspecs">
           <li>Drivers 40mm custom</li>
           <li>ANC computationnel</li>
           <li>20h autonomie</li>
           <li>5 coloris disponibles</li>
         </ul>
-        <div class="model-foot">
-          <div>
-            <div class="price">579 €</div>
-            <div class="price-sub">Ou 48,25 €/mois</div>
-          </div>
-          <button class="btn-card" onclick="addCart(this)">Acheter</button>
+        <div class="mfoot">
+          <div><div class="mprice">579 €</div><div class="msub">Ou 48,25 €/mois</div></div>
+          <button class="mbuy" onclick="addCart(this)">Acheter</button>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- SON -->
-<section class="sound-outer" id="son">
+<!-- STATS -->
+<section id="stats">
+  <div class="sstat">
+    <div class="snum"><span class="scnt" data-val="97">0</span><span class="ssuf">%</span></div>
+    <div class="slbl">Bruit supprimé</div>
+  </div>
+  <div class="sstat">
+    <div class="snum"><span class="scnt" data-val="48">0</span><span class="ssuf">k</span></div>
+    <div class="slbl">Analyses / seconde</div>
+  </div>
+  <div class="sstat">
+    <div class="snum"><span class="scnt" data-val="30">0</span><span class="ssuf">h</span></div>
+    <div class="slbl">Autonomie totale</div>
+  </div>
+  <div class="sstat">
+    <div class="snum">0.7<span class="ssuf">ms</span></div>
+    <div class="slbl">Latence audio</div>
+  </div>
+</section>
+
+<!-- SOUND -->
+<section id="sound">
   <div class="sound-inner">
-    <div class="sound-text">
-      <div class="section-label">Audio</div>
-      <h2 class="section-title">Un son qui<br>te <em>transporte</em></h2>
-      <p>La puce H2 traite l'audio en temps réel avec une latence de 0,7 ms. Chaque note, chaque fréquence, chaque détail est reproduit avec une précision absolue.</p>
-      <p>L'égaliseur adaptatif ajuste automatiquement les fréquences selon la forme de ton canal auditif pour une calibration unique à chaque écoute.</p>
-      <div class="stats-row">
-        <div class="stat">
-          <div class="num" data-val="97">0<span>%</span></div>
-          <div class="lbl">Bruit supprimé</div>
-        </div>
-        <div class="stat">
-          <div class="num" data-val="48">0<span>k</span></div>
-          <div class="lbl">Analyses/sec</div>
-        </div>
-        <div class="stat">
-          <div class="num">0.7<span>ms</span></div>
-          <div class="lbl">Latence audio</div>
-        </div>
-      </div>
+    <div class="st">
+      <div class="sec-label">Audio</div>
+      <h2 class="sec-title">Un son qui te<br><em>transporte</em></h2>
+      <p>La puce H2 traite l'audio avec une latence de 0,7 ms — imperceptible pour l'oreille humaine. Chaque note, chaque détail, rendu avec une précision absolue.</p>
+      <p>L'égaliseur adaptatif ajuste automatiquement les fréquences selon la morphologie de ton canal auditif pour une calibration unique.</p>
     </div>
-    <div class="sound-viz">
-      <div id="eq-bars"></div>
-    </div>
+    <div class="eqwrap"><div id="eq"></div></div>
   </div>
 </section>
 
 <!-- CTA -->
-<section class="cta-section">
-  <div class="section-label">Commander</div>
-  <h2 class="section-title">Prêt à tout entendre<br>différemment ?</h2>
-  <p class="sub">Livraison gratuite · Retours sous 14 jours · Garantie 1 an</p>
-  <a href="#models" class="btn-white">Commander maintenant</a>
+<section id="cta">
+  <div class="cta-inner">
+    <div class="sec-label">Commander</div>
+    <h2 class="sec-title">Prêt à tout entendre<br>différemment ?</h2>
+    <p class="csub">Livraison gratuite · Retours sous 14 jours · Garantie 1 an</p>
+    <a href="#models" class="btn-wh">Commander maintenant</a>
+  </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
   <p>© 2024 AirPods Store — Tous droits réservés</p>
   <p>Apple, AirPods, AirPods Pro et AirPods Max sont des marques déposées d'Apple Inc.</p>
 </footer>
 
 <script>
-/* ── UTILS ── */
-function makeRenderer(canvas, bg, alpha) {
-  const r = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: !!alpha });
-  r.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  r.shadowMap.enabled = true;
-  r.shadowMap.type = THREE.PCFSoftShadowMap;
-  if (!alpha) r.setClearColor(bg);
-  return r;
-}
+/* ══════════════════════════════════════════
+   1. CANVAS SCROLL — vraies frames Apple
+══════════════════════════════════════════ */
+(function(){
+  var canvas = document.getElementById('airpods-canvas');
+  var ctx = canvas.getContext('2d');
+  var frameCount = 147;
+  var images = [];
+  var imgLoaded = 0;
+  var currentFrameIdx = 0;
 
-/* ── AIRPOD PRO 3D ── */
-function buildAirPodPro(color) {
+  // URL Apple CDN (vraies frames officielles)
+  function frameUrl(i){
+    return 'https://www.apple.com/105/media/us/airpods-pro/2019/1299e2f5_9206_4470_b28e_08307a42f19b/anim/sequence/large/01-hero-lightpass/'
+      + i.toString().padStart(4,'0') + '.jpg';
+  }
+
+  // Taille canvas
+  function setSize(){
+    var vw = window.innerWidth;
+    var vh = window.innerHeight - 52;
+    canvas.width = vw;
+    canvas.height = vh;
+    if(images[currentFrameIdx] && images[currentFrameIdx].complete){
+      drawFrame(currentFrameIdx);
+    }
+  }
+
+  function drawFrame(idx){
+    if(!images[idx] || !images[idx].complete) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    var img = images[idx];
+    var scale = Math.min(canvas.width/img.naturalWidth, canvas.height/img.naturalHeight);
+    var x = (canvas.width  - img.naturalWidth  * scale) / 2;
+    var y = (canvas.height - img.naturalHeight * scale) / 2;
+    ctx.drawImage(img, x, y, img.naturalWidth*scale, img.naturalHeight*scale);
+  }
+
+  // Précharge toutes les images
+  function preload(){
+    for(var i=1; i<=frameCount; i++){
+      (function(idx){
+        var img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = function(){
+          imgLoaded++;
+          if(idx === 1){ drawFrame(1); } // affiche frame 1 immédiatement
+        };
+        img.src = frameUrl(idx);
+        images[idx] = img;
+      })(i);
+    }
+  }
+
+  // Scroll → frame
+  var section = document.getElementById('canvas-section');
+  var space   = section.querySelector('.canvas-scroll-space');
+
+  function onScroll(){
+    var rect = space.getBoundingClientRect();
+    var sectionTop = window.scrollY + rect.top;
+    var scrolled = window.scrollY - sectionTop;
+    var total    = space.offsetHeight - window.innerHeight;
+    var fraction = Math.max(0, Math.min(1, scrolled / total));
+    var frameIdx = Math.max(1, Math.min(frameCount, Math.ceil(fraction * frameCount)));
+    currentFrameIdx = frameIdx;
+    requestAnimationFrame(function(){ drawFrame(frameIdx); });
+
+    // Textes overlay
+    var p = fraction;
+    var cot1 = document.getElementById('cot1');
+    var cot2 = document.getElementById('cot2');
+    var cot3 = document.getElementById('cot3');
+    cot1.style.opacity = (p > .05 && p < .32) ? Math.min(1,(p-.05)*8) : (p >= .32 ? Math.max(0,1-(p-.32)*8) : 0);
+    cot2.style.opacity = (p > .35 && p < .62) ? Math.min(1,(p-.35)*8) : (p >= .62 ? Math.max(0,1-(p-.62)*8) : 0);
+    cot3.style.opacity = (p > .65 && p < .92) ? Math.min(1,(p-.65)*8) : (p >= .92 ? Math.max(0,1-(p-.92)*8) : 0);
+  }
+
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', setSize);
+  setSize();
+  preload();
+})();
+
+/* ══════════════════════════════════════════
+   2. THREE.JS — AirPod 3D réaliste
+══════════════════════════════════════════ */
+function buildPod(color){
   color = color || 0xfafafa;
-  const g = new THREE.Group();
-
-  const mat = new THREE.MeshPhysicalMaterial({
-    color: color, metalness: 0.0, roughness: 0.12,
-    clearcoat: 1.0, clearcoatRoughness: 0.04, reflectivity: 0.9
-  });
-  const matDark = new THREE.MeshPhysicalMaterial({ color: 0x1a1a1e, metalness: 0.2, roughness: 0.5 });
-  const matTip = new THREE.MeshPhysicalMaterial({
-    color: 0xe0e0e8, metalness: 0.0, roughness: 0.55, transparent: true, opacity: 0.9
-  });
-  const matLed = new THREE.MeshStandardMaterial({ color: 0x0071e3, emissive: 0x0071e3, emissiveIntensity: 2 });
-
-  /* Embout silicone */
-  var tipS = new THREE.SphereGeometry(0.3, 32, 32);
-  tipS.scale(1, 0.8, 1);
-  var tip = new THREE.Mesh(tipS, matTip);
-  tip.position.set(0, 0.55, 0);
-  g.add(tip);
-
-  /* Anneau embout */
-  var ringG = new THREE.TorusGeometry(0.22, 0.04, 16, 48);
-  var ring = new THREE.Mesh(ringG, matTip);
-  ring.position.set(0, 0.3, 0);
-  ring.rotation.x = Math.PI / 2;
-  g.add(ring);
-
-  /* Corps principal */
-  var bodyS = new THREE.SphereGeometry(0.52, 64, 64);
-  bodyS.scale(1, 1.18, 0.94);
-  var body = new THREE.Mesh(bodyS, mat);
-  body.castShadow = true;
-  g.add(body);
-
-  /* Rebord grille speaker */
-  var grillRingG = new THREE.TorusGeometry(0.23, 0.02, 16, 48);
-  var grillRing = new THREE.Mesh(grillRingG, matDark);
-  grillRing.position.set(0, 0.08, 0.49);
-  grillRing.rotation.x = 0.18;
-  g.add(grillRing);
-
-  /* Mesh grille */
-  var grillG = new THREE.CircleGeometry(0.22, 32);
-  var grill = new THREE.Mesh(grillG, matDark);
-  grill.position.set(0, 0.08, 0.5);
-  grill.rotation.x = -0.18;
-  g.add(grill);
-
-  /* Trous speaker */
-  for (var i = 0; i < 8; i++) {
-    var a = (i / 8) * Math.PI * 2;
-    var hG = new THREE.CircleGeometry(0.025, 8);
-    var h = new THREE.Mesh(hG, new THREE.MeshStandardMaterial({ color: 0x111111 }));
-    h.position.set(Math.cos(a)*0.14, 0.08 + Math.sin(a)*0.14, 0.505);
-    h.rotation.x = -0.18;
-    g.add(h);
-  }
-  var ch = new THREE.Mesh(new THREE.CircleGeometry(0.028, 8), new THREE.MeshStandardMaterial({ color: 0x111111 }));
-  ch.position.set(0, 0.08, 0.506); ch.rotation.x = -0.18;
-  g.add(ch);
-
-  /* Capteur ANC haut */
-  var micG = new THREE.SphereGeometry(0.045, 16, 16);
-  var mic1 = new THREE.Mesh(micG, matDark);
-  mic1.position.set(0, 0.54, 0.2);
-  g.add(mic1);
-
-  /* Tige */
-  var stemG = new THREE.CylinderGeometry(0.115, 0.09, 1.25, 32);
-  var stem = new THREE.Mesh(stemG, mat);
-  stem.position.set(0, -0.98, 0);
-  stem.castShadow = true;
-  g.add(stem);
-
-  /* Bas de tige arrondi */
-  var capG = new THREE.SphereGeometry(0.09, 32, 32);
-  capG.scale(1, 0.55, 1);
-  var cap = new THREE.Mesh(capG, mat);
-  cap.position.set(0, -1.625, 0);
-  g.add(cap);
-
-  /* LED */
-  var led = new THREE.Mesh(new THREE.SphereGeometry(0.042, 16, 16), matLed);
-  led.position.set(0.1, -1.38, 0.06);
-  g.add(led);
-
-  /* Aura LED */
-  var aura = new THREE.Mesh(
-    new THREE.SphereGeometry(0.08, 16, 16),
-    new THREE.MeshStandardMaterial({ color: 0x0071e3, transparent: true, opacity: 0.25 })
-  );
-  aura.position.copy(led.position);
-  g.add(aura);
-
-  /* Ligne déco tige */
-  var lineG = new THREE.CylinderGeometry(0.005, 0.005, 0.75, 8);
-  var line = new THREE.Mesh(lineG, new THREE.MeshStandardMaterial({ color: 0xbcbcbc }));
-  line.position.set(0.112, -1.02, 0);
-  line.rotation.z = 0.055;
-  g.add(line);
-
-  /* Microphone bas tige */
-  var micBot = new THREE.Mesh(new THREE.SphereGeometry(0.04, 12, 12), matDark);
-  micBot.position.set(0, -1.55, 0.06);
-  g.add(micBot);
-
-  return g;
-}
-
-/* ── BOITIER ── */
-function buildCase() {
   var g = new THREE.Group();
+
   var mat = new THREE.MeshPhysicalMaterial({
-    color: 0xf8f8fa, metalness: 0.0, roughness: 0.18,
-    clearcoat: 1.0, clearcoatRoughness: 0.04
+    color:color, metalness:.0, roughness:.1,
+    clearcoat:1.0, clearcoatRoughness:.03, reflectivity:.95
   });
-  var matDark = new THREE.MeshStandardMaterial({ color: 0x2c2c2e, roughness: 0.4 });
+  var matD = new THREE.MeshPhysicalMaterial({color:0x1a1a1e,metalness:.15,roughness:.5});
+  var matTip = new THREE.MeshPhysicalMaterial({color:0xe4e4ea,metalness:0,roughness:.5,transparent:true,opacity:.92});
+  var matLed = new THREE.MeshStandardMaterial({color:0x0071e3,emissive:0x0071e3,emissiveIntensity:2.2});
 
-  /* Corps */
-  var bodyG = new THREE.BoxGeometry(1.5, 1.9, 0.9);
-  var body = new THREE.Mesh(bodyG, mat);
-  body.castShadow = true;
-  g.add(body);
+  // Embout
+  var ts = new THREE.SphereGeometry(.3,32,32); ts.scale(1,.78,1);
+  g.add(Object.assign(new THREE.Mesh(ts,matTip),{position:{set:function(x,y,z){this.pos=[x,y,z];return this;}}}) );
+  var tipM = new THREE.Mesh(ts, matTip);
+  tipM.position.set(0,.56,0);
+  g.add(tipM);
 
-  /* Couvercle ouvert */
-  var lidG = new THREE.BoxGeometry(1.5, 0.55, 0.9);
-  var lid = new THREE.Mesh(lidG, mat);
-  lid.position.set(0, 1.22, 0);
-  lid.rotation.x = -0.28;
-  g.add(lid);
+  // Anneau
+  var rg = new THREE.TorusGeometry(.22,.04,16,48);
+  var rm = new THREE.Mesh(rg,matTip);
+  rm.position.set(0,.3,0); rm.rotation.x=Math.PI/2;
+  g.add(rm);
 
-  /* Charnière */
-  var hingeG = new THREE.CylinderGeometry(0.065, 0.065, 1.4, 20);
-  hingeG.rotateZ(Math.PI / 2);
-  var hinge = new THREE.Mesh(hingeG, matDark);
-  hinge.position.set(0, 0.93, -0.42);
-  g.add(hinge);
+  // Corps
+  var bs = new THREE.SphereGeometry(.52,64,64); bs.scale(1,1.18,.94);
+  var bm = new THREE.Mesh(bs,mat); bm.castShadow=true;
+  g.add(bm);
 
-  /* LED orange */
-  var ledMat = new THREE.MeshStandardMaterial({ color: 0xff9500, emissive: 0xff9500, emissiveIntensity: 1.2 });
-  var led = new THREE.Mesh(new THREE.SphereGeometry(0.045, 16, 16), ledMat);
-  led.position.set(0, -0.22, 0.46);
-  g.add(led);
+  // Grille speaker
+  var gr = new THREE.TorusGeometry(.23,.018,16,48);
+  var grm = new THREE.Mesh(gr,matD);
+  grm.position.set(0,.08,.49); grm.rotation.x=.18;
+  g.add(grm);
 
-  /* USB-C */
-  var portG = new THREE.BoxGeometry(0.24, 0.085, 0.04);
-  var port = new THREE.Mesh(portG, matDark);
-  port.position.set(0, -0.96, 0.46);
-  g.add(port);
+  var gc = new THREE.Mesh(new THREE.CircleGeometry(.22,32),matD);
+  gc.position.set(0,.08,.5); gc.rotation.x=-.18;
+  g.add(gc);
 
-  /* Gravure logo */
-  var logoG = new THREE.CircleGeometry(0.12, 32);
-  var logo = new THREE.Mesh(logoG, new THREE.MeshStandardMaterial({ color: 0xe0e0e5 }));
-  logo.position.set(0, 0.25, 0.46);
-  g.add(logo);
+  for(var i=0;i<8;i++){
+    var a=(i/8)*Math.PI*2;
+    var hm=new THREE.Mesh(new THREE.CircleGeometry(.025,8),new THREE.MeshStandardMaterial({color:0x111}));
+    hm.position.set(Math.cos(a)*.14,.08+Math.sin(a)*.14,.505);
+    hm.rotation.x=-.18; g.add(hm);
+  }
+  var ch=new THREE.Mesh(new THREE.CircleGeometry(.028,8),new THREE.MeshStandardMaterial({color:0x111}));
+  ch.position.set(0,.08,.506); ch.rotation.x=-.18; g.add(ch);
+
+  // Capteur
+  var mc=new THREE.Mesh(new THREE.SphereGeometry(.045,16,16),matD);
+  mc.position.set(0,.54,.2); g.add(mc);
+
+  // Tige
+  var stg=new THREE.CylinderGeometry(.115,.09,1.25,32);
+  var stm=new THREE.Mesh(stg,mat); stm.position.set(0,-.98,0); stm.castShadow=true;
+  g.add(stm);
+
+  var cpg=new THREE.SphereGeometry(.09,32,32); cpg.scale(1,.55,1);
+  var cpm=new THREE.Mesh(cpg,mat); cpm.position.set(0,-1.625,0);
+  g.add(cpm);
+
+  // LED
+  var led=new THREE.Mesh(new THREE.SphereGeometry(.042,16,16),matLed);
+  led.position.set(.1,-1.38,.06); g.add(led);
+  var aura=new THREE.Mesh(new THREE.SphereGeometry(.08,16,16),
+    new THREE.MeshStandardMaterial({color:0x0071e3,transparent:true,opacity:.25}));
+  aura.position.copy(led.position); g.add(aura);
+
+  // Ligne
+  var lg=new THREE.CylinderGeometry(.005,.005,.75,8);
+  var lm=new THREE.Mesh(lg,new THREE.MeshStandardMaterial({color:0xbbbbbb}));
+  lm.position.set(.112,-1.02,0); lm.rotation.z=.055; g.add(lm);
 
   return g;
 }
 
-/* ── PARTICLES ── */
-function buildParticles(n, spread, col) {
-  var geo = new THREE.BufferGeometry();
-  var pos = new Float32Array(n * 3);
-  for (var i = 0; i < n; i++) {
-    pos[i*3]   = (Math.random()-0.5)*spread;
-    pos[i*3+1] = (Math.random()-0.5)*spread;
-    pos[i*3+2] = (Math.random()-0.5)*spread;
+function buildParticles(n,spread,col){
+  var geo=new THREE.BufferGeometry();
+  var pos=new Float32Array(n*3);
+  for(var i=0;i<n;i++){
+    pos[i*3]=(Math.random()-.5)*spread;
+    pos[i*3+1]=(Math.random()-.5)*spread;
+    pos[i*3+2]=(Math.random()-.5)*spread;
   }
-  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  return new THREE.Points(geo, new THREE.PointsMaterial({ color: col, size: 0.05, transparent: true, opacity: 0.5 }));
+  geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  return new THREE.Points(geo,new THREE.PointsMaterial({color:col,size:.05,transparent:true,opacity:.5}));
 }
 
-/* ════════ HERO SCENE ════════ */
-(function() {
-  var container = document.getElementById('canvas-container');
-  var canvas = document.createElement('canvas');
-  container.appendChild(canvas);
+// ── Features Scene ──
+(function(){
+  var canvas=document.getElementById('feat-canvas');
+  if(!canvas)return;
+  var R=new THREE.WebGLRenderer({canvas,antialias:true});
+  R.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  R.setClearColor(0x1d1d1f);
+  var scene=new THREE.Scene();
+  var cam=new THREE.PerspectiveCamera(40,1,.1,100);
+  cam.position.set(0,0,6.5);
 
-  var renderer = makeRenderer(canvas, null, true);
-  var scene = new THREE.Scene();
-  var camera = new THREE.PerspectiveCamera(42, container.clientWidth / container.clientHeight, 0.1, 100);
-  camera.position.set(0, 0.5, 7.5);
+  scene.add(new THREE.AmbientLight(0xffffff,.35));
+  var d=new THREE.DirectionalLight(0xffffff,1.5); d.position.set(4,6,5); scene.add(d);
+  var p1=new THREE.PointLight(0x2997ff,3.5,14); scene.add(p1);
+  var p2=new THREE.PointLight(0xbf5af2,2.5,11); scene.add(p2);
+  var p3=new THREE.PointLight(0x34c759,1.5,8); p3.position.set(0,-4,1); scene.add(p3);
 
-  /* Lumières */
-  scene.add(new THREE.AmbientLight(0xffffff, 0.7));
-  var d1 = new THREE.DirectionalLight(0xffffff, 1.4); d1.position.set(5, 8, 6); d1.castShadow = true; scene.add(d1);
-  var d2 = new THREE.DirectionalLight(0xc0e0ff, 0.6); d2.position.set(-4, -3, -4); scene.add(d2);
-  var pt = new THREE.PointLight(0x0071e3, 2, 20); pt.position.set(0, 4, 4); scene.add(pt);
-  var pt2 = new THREE.PointLight(0x7ac8ff, 1.5, 15); pt2.position.set(-4, 0, 2); scene.add(pt2);
+  var pod=buildPod(0xf5f5f7); pod.scale.set(1.5,1.5,1.5); scene.add(pod);
 
-  /* AirPods */
-  var podL = buildAirPodPro(0xfafafa);
-  podL.position.set(-1.5, 0.7, 0); podL.rotation.set(0.05, 0.35, -0.38);
-  var podR = buildAirPodPro(0xfafafa);
-  podR.position.set(1.5, 0.7, 0); podR.rotation.set(0.05, -0.35, 0.38);
-  scene.add(podL, podR);
-
-  /* Boîtier */
-  var caseG = buildCase();
-  caseG.position.set(0, -1.3, 0); caseG.rotation.x = 0.1;
-  caseG.scale.set(0.9, 0.9, 0.9);
-  scene.add(caseG);
-
-  /* Particules */
-  scene.add(buildParticles(350, 12, 0x0071e3));
-  scene.add(buildParticles(180, 9, 0x7ac8ff));
-
-  /* Lumière mobile */
-  var mLight = new THREE.PointLight(0x2997ff, 2.5, 10);
-  scene.add(mLight);
-
-  function resize() {
-    var w = container.clientWidth, h = container.clientHeight;
-    camera.aspect = w/h; camera.updateProjectionMatrix();
-    renderer.setSize(w, h);
-  }
-  resize(); window.addEventListener('resize', resize);
-
-  var mx = 0, my = 0;
-  document.addEventListener('mousemove', function(e) {
-    mx = (e.clientX/window.innerWidth - 0.5)*2;
-    my = (e.clientY/window.innerHeight - 0.5)*2;
+  var rings=[];
+  [[1.9,0x2997ff,.3],[2.6,0xbf5af2,.2],[3.4,0x34c759,.12]].forEach(function(r){
+    var m=new THREE.Mesh(
+      new THREE.TorusGeometry(r[0],.01,16,128),
+      new THREE.MeshBasicMaterial({color:r[1],transparent:true,opacity:r[2]})
+    );
+    scene.add(m); rings.push(m);
   });
 
-  var t = 0;
-  (function loop() {
-    requestAnimationFrame(loop);
-    t += 0.012;
+  scene.add(buildParticles(500,10,0x2997ff));
+  scene.add(buildParticles(200,8,0xbf5af2));
 
-    podL.rotation.y = 0.35 + Math.sin(t) * 0.35 + mx * 0.12;
-    podL.rotation.x = 0.05 + Math.sin(t*0.7)*0.1 - my*0.04;
-    podL.position.y = 0.7 + Math.sin(t*0.8)*0.15;
+  function resize(){
+    var w=canvas.parentElement.clientWidth,h=canvas.parentElement.clientHeight;
+    cam.aspect=w/h; cam.updateProjectionMatrix(); R.setSize(w,h);
+  }
+  resize(); window.addEventListener('resize',resize);
 
-    podR.rotation.y = -0.35 + Math.sin(t+1)*0.35 + mx*0.12;
-    podR.rotation.x = 0.05 + Math.sin(t*0.7+1)*0.1 - my*0.04;
-    podR.position.y = 0.7 + Math.sin(t*0.8+1.2)*0.15;
-
-    caseG.rotation.y = Math.sin(t*0.4)*0.25 + mx*0.08;
-    caseG.position.y = -1.3 + Math.sin(t*0.5)*0.06;
-
-    mLight.position.set(Math.sin(t*0.9)*4, Math.cos(t*0.6)*3, Math.sin(t*1.1)*2 + 3);
-
-    scene.children.forEach(function(c) {
-      if (c instanceof THREE.Points) { c.rotation.y += 0.0008; c.rotation.x += 0.0004; }
-    });
-
-    renderer.render(scene, camera);
+  var t=0;
+  (function loop(){
+    requestAnimationFrame(loop); t+=.01;
+    pod.rotation.y=t*.55; pod.rotation.x=Math.sin(t*.5)*.22;
+    pod.position.y=Math.sin(t*.7)*.18;
+    rings[0].rotation.x=t*.3; rings[0].rotation.z=t*.18;
+    rings[1].rotation.y=t*.22; rings[1].rotation.x=t*.15;
+    rings[2].rotation.z=t*.28; rings[2].rotation.y=-t*.12;
+    p1.position.set(Math.sin(t)*5,Math.cos(t*.7)*3,3);
+    p2.position.set(Math.cos(t*.8)*4,Math.sin(t*.6)*3,2);
+    R.render(scene,cam);
   })();
 })();
 
-/* ════════ FEATURES SCENE ════════ */
-(function() {
-  var canvas = document.getElementById('canvas-features');
-  if (!canvas) return;
-  var renderer = makeRenderer(canvas, 0x1d1d1f, false);
-  renderer.setClearColor(0x1d1d1f);
-  var scene = new THREE.Scene();
-  var camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
-  camera.position.set(0, 0, 6);
-
-  scene.add(new THREE.AmbientLight(0xffffff, 0.35));
-  var d = new THREE.DirectionalLight(0xffffff, 1.6); d.position.set(4, 6, 4); scene.add(d);
-  var pt1 = new THREE.PointLight(0x2997ff, 3.5, 14); pt1.position.set(-3, 2, 3); scene.add(pt1);
-  var pt2 = new THREE.PointLight(0xbf5af2, 2.5, 11); pt2.position.set(3, -2, 2); scene.add(pt2);
-  var pt3 = new THREE.PointLight(0x34c759, 1.5, 8); pt3.position.set(0, -4, 1); scene.add(pt3);
-
-  var pod = buildAirPodPro(0xf5f5f7);
-  pod.scale.set(1.5, 1.5, 1.5);
-  scene.add(pod);
-
-  /* Anneaux orbitaux */
-  var rings = [];
-  [[1.9, 0x2997ff, 0.3], [2.6, 0xbf5af2, 0.2], [3.3, 0x34c759, 0.12]].forEach(function(r) {
-    var rg = new THREE.TorusGeometry(r[0], 0.01, 16, 128);
-    var rm = new THREE.Mesh(rg, new THREE.MeshBasicMaterial({ color: r[1], transparent: true, opacity: r[2] }));
-    scene.add(rm); rings.push(rm);
-  });
-
-  scene.add(buildParticles(500, 10, 0x2997ff));
-  scene.add(buildParticles(200, 8, 0xbf5af2));
-
-  function resize() {
-    var w = canvas.parentElement.clientWidth, h = canvas.parentElement.clientHeight;
-    camera.aspect = w/h; camera.updateProjectionMatrix(); renderer.setSize(w, h);
+// ── Mini-scenes modèles ──
+function miniScene(id,buildFn,bg,lc){
+  var canvas=document.getElementById(id);
+  if(!canvas)return;
+  var wrap=canvas.parentElement;
+  var R=new THREE.WebGLRenderer({canvas,antialias:true});
+  R.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  R.setClearColor(bg);
+  var scene=new THREE.Scene();
+  var cam=new THREE.PerspectiveCamera(40,wrap.clientWidth/wrap.clientHeight,.1,50);
+  cam.position.set(0,.5,5.8);
+  scene.add(new THREE.AmbientLight(0xffffff,.8));
+  var d=new THREE.DirectionalLight(0xffffff,1.1); d.position.set(3,5,4); scene.add(d);
+  var p=new THREE.PointLight(lc,2.5,12); p.position.set(-2,2,3); scene.add(p);
+  var p2=new THREE.PointLight(lc,1.4,8); p2.position.set(2,-1,2); scene.add(p2);
+  var obj=buildFn(); obj.scale.set(1.05,1.05,1.05); scene.add(obj);
+  scene.add(buildParticles(100,6,lc));
+  function resize(){
+    var w=wrap.clientWidth,h=wrap.clientHeight;
+    cam.aspect=w/h; cam.updateProjectionMatrix(); R.setSize(w,h);
   }
-  resize(); window.addEventListener('resize', resize);
-
-  var t = 0;
-  (function loop() {
-    requestAnimationFrame(loop);
-    t += 0.01;
-    pod.rotation.y = t * 0.55;
-    pod.rotation.x = Math.sin(t*0.5)*0.22;
-    pod.position.y = Math.sin(t*0.7)*0.18;
-
-    rings[0].rotation.x = t*0.3; rings[0].rotation.z = t*0.18;
-    rings[1].rotation.y = t*0.22; rings[1].rotation.x = t*0.15;
-    rings[2].rotation.z = t*0.28; rings[2].rotation.y = -t*0.12;
-
-    pt1.position.set(Math.sin(t)*5, Math.cos(t*0.7)*3, 3);
-    pt2.position.set(Math.cos(t*0.8)*4, Math.sin(t*0.6)*3, 2);
-    pt3.position.set(Math.sin(t*1.2)*3, -4+Math.cos(t)*2, 2);
-
-    renderer.render(scene, camera);
-  })();
-})();
-
-/* ════════ MINI SCÈNES MODÈLES ════════ */
-function miniScene(id, buildFn, bg, lightCol) {
-  var canvas = document.getElementById(id);
-  if (!canvas) return;
-  var wrap = canvas.parentElement;
-  var renderer = makeRenderer(canvas, bg, false);
-  renderer.setClearColor(bg);
-  var scene = new THREE.Scene();
-  var camera = new THREE.PerspectiveCamera(40, wrap.clientWidth/wrap.clientHeight, 0.1, 50);
-  camera.position.set(0, 0.5, 5.8);
-
-  scene.add(new THREE.AmbientLight(0xffffff, 0.8));
-  var d = new THREE.DirectionalLight(0xffffff, 1.2); d.position.set(3,5,4); scene.add(d);
-  var pt = new THREE.PointLight(lightCol, 2.5, 12); pt.position.set(-2,2,3); scene.add(pt);
-  var pt2 = new THREE.PointLight(lightCol, 1.5, 8); pt2.position.set(2,-1,2); scene.add(pt2);
-
-  var obj = buildFn();
-  obj.scale.set(1.05, 1.05, 1.05);
-  scene.add(obj);
-  scene.add(buildParticles(100, 6, lightCol));
-
-  function resize() {
-    var w = wrap.clientWidth, h = wrap.clientHeight;
-    camera.aspect = w/h; camera.updateProjectionMatrix(); renderer.setSize(w, h);
-  }
-  resize(); window.addEventListener('resize', resize);
-
-  var t = 0, hov = false;
-  wrap.parentElement.addEventListener('mouseenter', function(){ hov=true; });
-  wrap.parentElement.addEventListener('mouseleave', function(){ hov=false; });
-
-  (function loop() {
-    requestAnimationFrame(loop);
-    t += hov ? 0.022 : 0.008;
-    obj.rotation.y = t;
-    obj.position.y = Math.sin(t*0.9)*0.1;
-    renderer.render(scene, camera);
+  resize(); window.addEventListener('resize',resize);
+  var t=0,hov=false;
+  wrap.parentElement.addEventListener('mouseenter',function(){hov=true;});
+  wrap.parentElement.addEventListener('mouseleave',function(){hov=false;});
+  (function loop(){
+    requestAnimationFrame(loop); t+=hov?.022:.008;
+    obj.rotation.y=t; obj.position.y=Math.sin(t*.9)*.1;
+    R.render(scene,cam);
   })();
 }
 
-miniScene('c1', function() { return buildAirPodPro(0xfafafa); }, 0xf2f6fa, 0x0071e3);
-
-miniScene('c2', function() {
-  var g = new THREE.Group();
-  var l = buildAirPodPro(0xfafafa); l.position.set(-0.95,0.3,0); l.rotation.z=-0.32; l.rotation.y=0.25;
-  var r = buildAirPodPro(0xfafafa); r.position.set(0.95,0.3,0); r.rotation.z=0.32; r.rotation.y=-0.25;
-  g.add(l, r);
-  return g;
-}, 0xf5f0ff, 0x7b2fff);
-
-miniScene('c3', function() {
-  var g = new THREE.Group();
-  var mat = new THREE.MeshPhysicalMaterial({ color: 0xf2f2f5, metalness: 0.08, roughness: 0.18, clearcoat: 1.0 });
-  var matD = new THREE.MeshStandardMaterial({ color: 0x333336, roughness: 0.4 });
-
-  var curve = new THREE.QuadraticBezierCurve3(
-    new THREE.Vector3(-1.45,0,0), new THREE.Vector3(0,1.65,0), new THREE.Vector3(1.45,0,0)
+miniScene('mc1',function(){return buildPod(0xfafafa);},0xf2f6fa,0x0071e3);
+miniScene('mc2',function(){
+  var g=new THREE.Group();
+  var l=buildPod(0xfafafa); l.position.set(-.95,.3,0); l.rotation.z=-.32; l.rotation.y=.25;
+  var r=buildPod(0xfafafa); r.position.set(.95,.3,0); r.rotation.z=.32; r.rotation.y=-.25;
+  g.add(l,r); return g;
+},0xf5f0ff,0x7b2fff);
+miniScene('mc3',function(){
+  var g=new THREE.Group();
+  var mat=new THREE.MeshPhysicalMaterial({color:0xf2f2f5,metalness:.08,roughness:.18,clearcoat:1.0});
+  var matD=new THREE.MeshStandardMaterial({color:0x333336,roughness:.4});
+  var curve=new THREE.QuadraticBezierCurve3(
+    new THREE.Vector3(-1.45,0,0),new THREE.Vector3(0,1.65,0),new THREE.Vector3(1.45,0,0)
   );
-  var pts = curve.getPoints(80);
-  var tube = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 80, 0.075, 12, false);
-  g.add(new THREE.Mesh(tube, mat));
-
-  [-1.45, 1.45].forEach(function(x) {
-    var cush = new THREE.SphereGeometry(0.58, 32, 32); cush.scale(1, 0.65, 0.58);
-    var cm = new THREE.Mesh(cush, mat); cm.position.set(x, -0.2, 0); cm.castShadow = true; g.add(cm);
-    var gg = new THREE.CircleGeometry(0.3, 32);
-    var gm = new THREE.Mesh(gg, matD); gm.position.set(x, -0.2, 0.32); g.add(gm);
+  var pts=curve.getPoints(80);
+  g.add(new THREE.Mesh(
+    new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),80,.075,12,false),mat
+  ));
+  [-1.45,1.45].forEach(function(x){
+    var cs=new THREE.SphereGeometry(.58,32,32); cs.scale(1,.65,.58);
+    var cm=new THREE.Mesh(cs,mat); cm.position.set(x,-.2,0); g.add(cm);
+    var gm=new THREE.Mesh(new THREE.CircleGeometry(.3,32),matD);
+    gm.position.set(x,-.2,.32); g.add(gm);
   });
+  var cr=new THREE.Mesh(new THREE.CylinderGeometry(.11,.11,.2,20),matD);
+  cr.position.set(0,1.18,0); cr.rotation.z=Math.PI/2; g.add(cr);
+  g.position.y=-.35; return g;
+},0xf0f8f2,0x34c759);
 
-  var crown = new THREE.Mesh(new THREE.CylinderGeometry(0.11,0.11,0.2,20), matD);
-  crown.position.set(0,1.18,0); crown.rotation.z = Math.PI/2; g.add(crown);
+/* ══════════════════════════════════════════
+   3. EQUALIZER
+══════════════════════════════════════════ */
+(function(){
+  var eq=document.getElementById('eq');
+  [28,52,88,128,168,208,176,142,108,78,118,162,132,94,58,38,68,102,145,188].forEach(function(h,i){
+    var b=document.createElement('div');
+    b.className='eqb';
+    b.style.cssText='height:'+h+'px;animation-delay:'+(i*.062)+'s;animation-duration:'+(0.65+Math.random()*.85)+'s';
+    eq.appendChild(b);
+  });
+})();
 
-  g.position.y = -0.35;
-  return g;
-}, 0xf0f8f2, 0x34c759);
-
-/* ════════ EQUALIZER ════════ */
-var eq = document.getElementById('eq-bars');
-[30,55,90,130,170,210,180,145,110,80,120,165,135,95,60,40,70,105,148,190].forEach(function(h, i) {
-  var b = document.createElement('div');
-  b.className = 'eq-bar';
-  b.style.cssText = 'height:'+h+'px;animation-delay:'+(i*0.062)+'s;animation-duration:'+(0.65+Math.random()*0.85)+'s';
-  eq.appendChild(b);
-});
-
-/* ════════ GSAP ════════ */
+/* ══════════════════════════════════════════
+   4. GSAP
+══════════════════════════════════════════ */
 gsap.registerPlugin(ScrollTrigger);
 
-gsap.set(['.hero-eyebrow','.hero-title','.hero-sub','.hero-btns','#canvas-container','.scroll-hint'], { y: 35, opacity: 0 });
-gsap.timeline({ delay: 0.3 })
-  .to('.hero-eyebrow',      { y:0, opacity:1, duration:0.8, ease:'power3.out' })
-  .to('.hero-title',        { y:0, opacity:1, duration:0.9, ease:'power3.out' }, '-=0.5')
-  .to('.hero-sub',          { y:0, opacity:1, duration:0.8, ease:'power3.out' }, '-=0.5')
-  .to('.hero-btns',         { y:0, opacity:1, duration:0.7, ease:'power3.out' }, '-=0.4')
-  .to('#canvas-container',  { y:0, opacity:1, duration:1.1, ease:'power3.out' }, '-=0.5')
-  .to('.scroll-hint',       { opacity:1, duration:0.6 }, '-=0.2');
+// Intro
+gsap.set(['#intro .intro-tag','#intro h1','#intro p','.intro-btns'],{y:35,opacity:0});
+gsap.timeline({delay:.3})
+  .to('#intro .intro-tag',{y:0,opacity:1,duration:.8,ease:'power3.out'})
+  .to('#intro h1',       {y:0,opacity:1,duration:.9,ease:'power3.out'},'-=.5')
+  .to('#intro p',        {y:0,opacity:1,duration:.8,ease:'power3.out'},'-=.5')
+  .to('.intro-btns',     {y:0,opacity:1,duration:.7,ease:'power3.out'},'-=.4');
 
-document.querySelectorAll('.feature-item').forEach(function(el) {
-  gsap.to(el, {
-    opacity:1, x:0, duration:0.9, ease:'power3.out',
-    scrollTrigger: { trigger:el, start:'top 82%', toggleActions:'play none none reverse' }
+// Features items
+document.querySelectorAll('.feat-item').forEach(function(el){
+  gsap.fromTo(el,{opacity:0,x:50},{
+    opacity:1,x:0,duration:.9,ease:'power3.out',
+    scrollTrigger:{trigger:el,start:'top 82%',toggleActions:'play none none reverse'}
   });
 });
 
-document.querySelectorAll('.model-card').forEach(function(el, i) {
-  gsap.to(el, {
-    opacity:1, y:0, duration:0.85, delay:i*0.14, ease:'back.out(1.3)',
-    scrollTrigger: { trigger:'.models-grid', start:'top 78%', toggleActions:'play none none reverse' }
+// Model cards
+document.querySelectorAll('.mcard').forEach(function(el,i){
+  gsap.fromTo(el,{opacity:0,y:55},{
+    opacity:1,y:0,duration:.85,delay:i*.13,ease:'back.out(1.3)',
+    scrollTrigger:{trigger:'.models-grid',start:'top 78%',toggleActions:'play none none reverse'}
   });
 });
 
-gsap.from('.models-header', { opacity:0, y:30, duration:0.8, ease:'power3.out',
-  scrollTrigger: { trigger:'.models-header', start:'top 85%' }
-});
-gsap.from('.sound-text', { opacity:0, x:-50, duration:1, ease:'power3.out',
-  scrollTrigger: { trigger:'.sound-inner', start:'top 78%' }
-});
-gsap.from('.sound-viz', { opacity:0, x:50, duration:1, ease:'power3.out',
-  scrollTrigger: { trigger:'.sound-inner', start:'top 78%' }
-});
-gsap.from('.cta-section .section-label, .cta-section .section-title, .cta-section .sub, .btn-white', {
-  opacity:0, y:40, duration:0.9, stagger:0.13, ease:'power3.out',
-  scrollTrigger: { trigger:'.cta-section', start:'top 80%' }
+// Sec headers
+['#models .sec-head','#sound .sec-label','#sound .sec-title','#cta .sec-label','#cta .sec-title','#cta .csub','.btn-wh'].forEach(function(s){
+  gsap.fromTo(s,{opacity:0,y:30},{
+    opacity:1,y:0,duration:.85,ease:'power3.out',
+    scrollTrigger:{trigger:s,start:'top 87%',toggleActions:'play none none reverse'}
+  });
 });
 
-/* Compteurs stats */
-document.querySelectorAll('[data-val]').forEach(function(el) {
-  var target = parseInt(el.getAttribute('data-val'));
-  var suffix = el.querySelector('span') ? el.querySelector('span').outerHTML : '';
-  gsap.to({ val: 0 }, {
-    val: target, duration: 2.5, ease: 'power2.out',
-    scrollTrigger: { trigger: el, start: 'top 85%' },
-    onUpdate: function() {
-      el.innerHTML = Math.round(this.targets()[0].val) + suffix;
+// Stats counters
+document.querySelectorAll('.scnt').forEach(function(el){
+  var v=parseInt(el.getAttribute('data-val'));
+  ScrollTrigger.create({
+    trigger:el,start:'top 85%',once:true,
+    onEnter:function(){
+      var obj={n:0};
+      gsap.to(obj,{n:v,duration:2.2,ease:'power2.out',
+        onUpdate:function(){el.textContent=Math.round(obj.n);}
+      });
     }
   });
 });
 
-/* ════════ BUY BUTTON ════════ */
-function addCart(btn) {
-  btn.textContent = '✓ Ajouté !';
-  btn.style.background = '#34c759';
-  gsap.fromTo(btn, { scale: 0.88 }, { scale: 1, duration: 0.4, ease: 'back.out(2)' });
-  setTimeout(function() { btn.textContent = 'Acheter'; btn.style.background = ''; }, 2200);
+// Sound
+gsap.fromTo('.st',{opacity:0,x:-50},{opacity:1,x:0,duration:1,ease:'power3.out',
+  scrollTrigger:{trigger:'#sound',start:'top 78%'}
+});
+gsap.fromTo('.eqwrap',{opacity:0,x:50},{opacity:1,x:0,duration:1,ease:'power3.out',
+  scrollTrigger:{trigger:'#sound',start:'top 78%'}
+});
+
+// Stats section
+gsap.fromTo('#stats .sstat',{opacity:0,y:40},{
+  opacity:1,y:0,duration:.8,stagger:.12,ease:'power3.out',
+  scrollTrigger:{trigger:'#stats',start:'top 78%'}
+});
+
+/* ══════════════════════════════════════════
+   5. BUY BUTTON
+══════════════════════════════════════════ */
+function addCart(btn){
+  btn.textContent='✓ Ajouté !';
+  btn.style.background='#34c759';
+  gsap.fromTo(btn,{scale:.88},{scale:1,duration:.4,ease:'back.out(2)'});
+  setTimeout(function(){btn.textContent='Acheter';btn.style.background='';},2200);
 }
 </script>
 </body>
