@@ -1,0 +1,1633 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oxyra Agency – Création de sites web à Orléans</title>
+  <meta name="description" content="Oxyra Agency crée des sites web professionnels pour les petits commerces et TPE à Orléans. Restaurants, hôtels, garages, salons – à partir de 150€." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: {
+              950: '#05080f',
+              900: '#0a0e1a',
+              800: '#0f1528',
+              700: '#151c35',
+              600: '#1e2847',
+            },
+            orange: {
+              400: '#fb923c',
+              500: '#f97316',
+              600: '#ea6d0c',
+            },
+            cyan: {
+              400: '#22d3ee',
+              500: '#06b6d4',
+              600: '#0891b2',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          animation: {
+            'fade-up': 'fadeUp 0.6s ease forwards',
+            'fade-in': 'fadeIn 0.5s ease forwards',
+            'float': 'float 4s ease-in-out infinite',
+            'pulse-slow': 'pulse 3s ease-in-out infinite',
+          },
+          keyframes: {
+            fadeUp: {
+              '0%': { opacity: '0', transform: 'translateY(30px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-12px)' },
+            },
+          },
+        },
+      },
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      background-color: #0a0e1a;
+      color: #e2e8f0;
+      font-family: 'Inter', system-ui, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Gradient text */
+    .gradient-text {
+      background: linear-gradient(135deg, #f97316 0%, #22d3ee 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .gradient-text-orange {
+      background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Glow effects */
+    .glow-orange { box-shadow: 0 0 30px rgba(249, 115, 22, 0.3); }
+    .glow-cyan   { box-shadow: 0 0 30px rgba(6, 182, 212, 0.3); }
+    .glow-orange-sm { box-shadow: 0 0 15px rgba(249, 115, 22, 0.2); }
+
+    /* Glassmorphism */
+    .glass {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glass-hover {
+      transition: all 0.3s ease;
+    }
+    .glass-hover:hover {
+      background: rgba(255, 255, 255, 0.07);
+      border-color: rgba(249, 115, 22, 0.3);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 20px rgba(249, 115, 22, 0.1);
+    }
+
+    /* Hero bg glow */
+    .hero-glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.15;
+      pointer-events: none;
+    }
+
+    /* Animated gradient border */
+    .gradient-border {
+      position: relative;
+      background: linear-gradient(#0f1528, #0f1528) padding-box,
+                  linear-gradient(135deg, #f97316, #22d3ee) border-box;
+      border: 2px solid transparent;
+    }
+
+    /* Nav scroll effect */
+    .nav-scrolled {
+      background: rgba(10, 14, 26, 0.95) !important;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 4px 30px rgba(0,0,0,0.4);
+    }
+
+    /* CTA button */
+    .btn-primary {
+      background: linear-gradient(135deg, #f97316, #ea6d0c);
+      color: white;
+      font-weight: 600;
+      padding: 14px 32px;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 20px rgba(249, 115, 22, 0.3);
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(249, 115, 22, 0.5);
+      background: linear-gradient(135deg, #fb923c, #f97316);
+    }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-secondary {
+      background: transparent;
+      color: #e2e8f0;
+      font-weight: 500;
+      padding: 14px 32px;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(255,255,255,0.15);
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(255,255,255,0.3);
+      transform: translateY(-2px);
+    }
+
+    /* Pricing card featured */
+    .card-featured {
+      background: linear-gradient(135deg, rgba(249,115,22,0.1) 0%, rgba(6,182,212,0.05) 100%);
+      border: 1px solid rgba(249,115,22,0.3);
+      position: relative;
+    }
+    .card-featured::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, #f97316, #22d3ee);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    /* Section reveals */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* FAQ accordion */
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s ease;
+    }
+    .faq-answer.open {
+      max-height: 300px;
+    }
+    .faq-icon {
+      transition: transform 0.3s ease;
+    }
+    .faq-item.open .faq-icon {
+      transform: rotate(45deg);
+    }
+
+    /* Portfolio cards */
+    .portfolio-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 16px;
+      cursor: pointer;
+    }
+    .portfolio-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(10,14,26,0.95) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      display: flex;
+      align-items: flex-end;
+      padding: 24px;
+    }
+    .portfolio-card:hover .portfolio-overlay {
+      opacity: 1;
+    }
+    .portfolio-card:hover .portfolio-img {
+      transform: scale(1.08);
+    }
+    .portfolio-img {
+      transition: transform 0.5s ease;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Noise texture */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    /* Stats counter */
+    .stat-number { font-variant-numeric: tabular-nums; }
+
+    /* Mobile nav */
+    #mobile-menu {
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+    }
+    #mobile-menu.open {
+      transform: translateX(0);
+    }
+
+    /* Dot grid background */
+    .dot-grid {
+      background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 30px 30px;
+    }
+
+    /* Scroll indicator */
+    @keyframes scrollBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(6px); }
+    }
+    .scroll-indicator { animation: scrollBounce 1.5s ease-in-out infinite; }
+
+    /* Form inputs */
+    .form-input {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #e2e8f0;
+      border-radius: 10px;
+      padding: 12px 16px;
+      width: 100%;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .form-input:focus {
+      border-color: rgba(249,115,22,0.5);
+      box-shadow: 0 0 0 3px rgba(249,115,22,0.1);
+    }
+    .form-input::placeholder { color: #64748b; }
+
+    /* Tag badge */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .tag-orange {
+      background: rgba(249,115,22,0.15);
+      color: #fb923c;
+      border: 1px solid rgba(249,115,22,0.3);
+    }
+    .tag-cyan {
+      background: rgba(6,182,212,0.1);
+      color: #22d3ee;
+      border: 1px solid rgba(6,182,212,0.2);
+    }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+    }
+
+    /* Responsive hero browser mockup */
+    .browser-bar {
+      background: rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .browser-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    /* Pricing toggle background effect */
+    .price-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+    }
+
+    /* Success message */
+    #form-success {
+      display: none;
+    }
+    #form-success.show {
+      display: flex;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     NAVIGATION
+═══════════════════════════════════════════════ -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-4 px-4">
+  <div class="max-w-6xl mx-auto flex items-center justify-between">
+    <!-- Logo -->
+    <a href="#" class="flex items-center gap-2 group">
+      <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-orange-500 to-cyan-500 flex items-center justify-center shadow-lg">
+        <span class="text-white font-black text-lg leading-none">O</span>
+      </div>
+      <span class="text-white font-bold text-xl tracking-tight">Oxyra<span class="gradient-text">.</span></span>
+    </a>
+
+    <!-- Desktop links -->
+    <div class="hidden md:flex items-center gap-8">
+      <a href="#probleme" class="text-slate-400 hover:text-white text-sm font-medium transition-colors">Pourquoi nous</a>
+      <a href="#offres" class="text-slate-400 hover:text-white text-sm font-medium transition-colors">Offres</a>
+      <a href="#portfolio" class="text-slate-400 hover:text-white text-sm font-medium transition-colors">Réalisations</a>
+      <a href="#faq" class="text-slate-400 hover:text-white text-sm font-medium transition-colors">FAQ</a>
+    </div>
+
+    <!-- Desktop CTA -->
+    <div class="hidden md:flex items-center gap-3">
+      <a href="#contact" class="btn-primary text-sm py-2.5 px-5">
+        Demander un devis
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+      </a>
+    </div>
+
+    <!-- Hamburger -->
+    <button id="menu-toggle" class="md:hidden flex flex-col gap-1.5 p-2" aria-label="Menu">
+      <span class="menu-line w-6 h-0.5 bg-white transition-all duration-300 block"></span>
+      <span class="menu-line w-6 h-0.5 bg-white transition-all duration-300 block"></span>
+      <span class="menu-line w-4 h-0.5 bg-white transition-all duration-300 block"></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div id="mobile-menu" class="fixed inset-y-0 right-0 w-72 z-40 glass border-l border-white/10">
+  <div class="flex flex-col p-8 pt-24 gap-6">
+    <a href="#probleme" class="text-white text-lg font-medium mobile-link">Pourquoi nous</a>
+    <a href="#offres" class="text-white text-lg font-medium mobile-link">Offres</a>
+    <a href="#portfolio" class="text-white text-lg font-medium mobile-link">Réalisations</a>
+    <a href="#faq" class="text-white text-lg font-medium mobile-link">FAQ</a>
+    <div class="divider my-2"></div>
+    <a href="#contact" class="btn-primary justify-center mobile-link">Demander un devis</a>
+  </div>
+</div>
+<div id="menu-overlay" class="fixed inset-0 bg-black/50 z-30 hidden"></div>
+
+
+<!-- ═══════════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════════ -->
+<section id="hero" class="relative min-h-screen flex items-center pt-20 dot-grid overflow-hidden">
+  <!-- Background glows -->
+  <div class="hero-glow w-[600px] h-[600px] bg-orange-500 top-[-100px] left-[-200px]"></div>
+  <div class="hero-glow w-[500px] h-[500px] bg-cyan-500 bottom-[-100px] right-[-100px]"></div>
+
+  <div class="max-w-6xl mx-auto px-4 py-20 w-full">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+      <!-- Left content -->
+      <div>
+        <div class="tag tag-orange mb-6 reveal">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          Agence web à Orléans
+        </div>
+
+        <h1 class="text-5xl lg:text-6xl xl:text-7xl font-black leading-[1.05] tracking-tight text-white mb-6 reveal" style="transition-delay:0.1s">
+          Votre commerce<br/>
+          <span class="gradient-text">mérite un site</span><br/>
+          qui vend.
+        </h1>
+
+        <p class="text-slate-400 text-lg lg:text-xl leading-relaxed mb-10 max-w-lg reveal" style="transition-delay:0.2s">
+          On crée des sites web professionnels pour les petits commerces d'Orléans. Restaurants, hôtels, garages, salons — à partir de <strong class="text-white">150€</strong>.
+        </p>
+
+        <div class="flex flex-wrap gap-4 mb-14 reveal" style="transition-delay:0.3s">
+          <a href="#contact" class="btn-primary">
+            Demander un devis gratuit
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+          </a>
+          <a href="#portfolio" class="btn-secondary">
+            Voir nos réalisations
+          </a>
+        </div>
+
+        <!-- Stats row -->
+        <div class="flex flex-wrap gap-8 reveal" style="transition-delay:0.4s">
+          <div>
+            <div class="text-3xl font-black gradient-text-orange stat-number" data-target="48">0</div>
+            <div class="text-slate-500 text-sm mt-1">Sites livrés</div>
+          </div>
+          <div class="w-px bg-white/10"></div>
+          <div>
+            <div class="text-3xl font-black text-white stat-number">4.9<span class="text-orange-400">★</span></div>
+            <div class="text-slate-500 text-sm mt-1">Note clients</div>
+          </div>
+          <div class="w-px bg-white/10"></div>
+          <div>
+            <div class="text-3xl font-black text-cyan-400 stat-number" data-target="72">0</div>
+            <div class="text-slate-500 text-sm mt-1">Heures de délai</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right – browser mockup -->
+      <div class="relative hidden lg:block reveal" style="transition-delay:0.2s">
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div class="w-[500px] h-[500px] bg-orange-500 rounded-full blur-[120px] opacity-10"></div>
+        </div>
+
+        <!-- Floating browser window -->
+        <div class="relative z-10 glass rounded-2xl overflow-hidden shadow-2xl glow-orange-sm" style="animation: float 5s ease-in-out infinite;">
+          <!-- Browser bar -->
+          <div class="browser-bar px-4 py-3 flex items-center gap-3">
+            <div class="flex gap-1.5">
+              <div class="browser-dot bg-red-400 opacity-80"></div>
+              <div class="browser-dot bg-yellow-400 opacity-80"></div>
+              <div class="browser-dot bg-green-400 opacity-80"></div>
+            </div>
+            <div class="flex-1 bg-white/05 border border-white/10 rounded-md px-3 py-1 text-slate-500 text-xs flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+              lerestaurant-orleans.fr
+            </div>
+          </div>
+
+          <!-- Fake website content -->
+          <div class="bg-gradient-to-b from-navy-800 to-navy-900 p-6">
+            <!-- Header strip -->
+            <div class="flex items-center justify-between mb-5">
+              <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded bg-orange-500/20 border border-orange-500/30"></div>
+                <div class="w-20 h-2.5 bg-white/20 rounded-full"></div>
+              </div>
+              <div class="flex gap-3">
+                <div class="w-12 h-2 bg-white/10 rounded-full"></div>
+                <div class="w-12 h-2 bg-white/10 rounded-full"></div>
+                <div class="w-16 h-6 bg-orange-500 rounded-md opacity-80"></div>
+              </div>
+            </div>
+
+            <!-- Hero area -->
+            <div class="rounded-xl overflow-hidden mb-4 relative" style="height:160px; background: linear-gradient(135deg, #1a0a05 0%, #0a1a14 100%);">
+              <div class="absolute inset-0 opacity-20" style="background: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22><circle cx=%2220%22 cy=%2220%22 r=%221%22 fill=%22white%22 opacity=%220.3%22/></svg>') repeat;"></div>
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <div class="w-32 h-4 bg-white/30 rounded-full mb-2"></div>
+                <div class="w-48 h-3 bg-white/15 rounded-full mb-4"></div>
+                <div class="w-24 h-7 bg-orange-500 rounded-lg opacity-80"></div>
+              </div>
+            </div>
+
+            <!-- Content blocks -->
+            <div class="grid grid-cols-3 gap-3 mb-4">
+              <div class="glass rounded-lg p-3">
+                <div class="w-8 h-8 bg-orange-500/20 rounded-lg mb-2"></div>
+                <div class="w-full h-2 bg-white/10 rounded mb-1"></div>
+                <div class="w-3/4 h-2 bg-white/10 rounded"></div>
+              </div>
+              <div class="glass rounded-lg p-3">
+                <div class="w-8 h-8 bg-cyan-500/20 rounded-lg mb-2"></div>
+                <div class="w-full h-2 bg-white/10 rounded mb-1"></div>
+                <div class="w-3/4 h-2 bg-white/10 rounded"></div>
+              </div>
+              <div class="glass rounded-lg p-3">
+                <div class="w-8 h-8 bg-purple-500/20 rounded-lg mb-2"></div>
+                <div class="w-full h-2 bg-white/10 rounded mb-1"></div>
+                <div class="w-3/4 h-2 bg-white/10 rounded"></div>
+              </div>
+            </div>
+
+            <!-- Status bar -->
+            <div class="flex items-center justify-between text-xs text-slate-500">
+              <span class="flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 bg-green-400 rounded-full inline-block animate-pulse"></span>
+                En ligne · Mobile-ready
+              </span>
+              <span class="text-green-400">100 / 100</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating badge 1 -->
+        <div class="absolute -bottom-6 -left-8 glass rounded-xl p-3 flex items-center gap-3 shadow-xl z-20" style="animation: float 4s ease-in-out infinite 1s;">
+          <div class="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <div>
+            <div class="text-white text-sm font-semibold">Site livré !</div>
+            <div class="text-slate-500 text-xs">en 72h chrono</div>
+          </div>
+        </div>
+
+        <!-- Floating badge 2 -->
+        <div class="absolute -top-4 -right-4 glass rounded-xl px-4 py-2.5 shadow-xl z-20" style="animation: float 4s ease-in-out infinite 0.5s;">
+          <div class="text-orange-400 font-bold text-sm">+340% de visibilité</div>
+          <div class="text-slate-500 text-xs">Google · Résultats locaux</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 scroll-indicator">
+    <div class="w-6 h-10 border-2 border-white/20 rounded-full flex justify-center pt-2">
+      <div class="w-1 h-3 bg-white/40 rounded-full"></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════
+     LOGOS / SOCIAL PROOF
+═══════════════════════════════════════════════ -->
+<section class="py-12 border-y border-white/5">
+  <div class="max-w-6xl mx-auto px-4">
+    <p class="text-center text-slate-500 text-sm mb-8 reveal">Ils nous font confiance à Orléans et alentours</p>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 reveal" style="transition-delay:0.1s">
+      <div class="glass rounded-xl p-4 flex items-center justify-center gap-3 glass-hover">
+        <div class="w-9 h-9 bg-red-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-red-400 text-lg">🍕</span>
+        </div>
+        <div>
+          <div class="text-white font-semibold text-sm">Bella Italia</div>
+          <div class="text-slate-500 text-xs">Restaurant</div>
+        </div>
+      </div>
+      <div class="glass rounded-xl p-4 flex items-center justify-center gap-3 glass-hover">
+        <div class="w-9 h-9 bg-blue-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-blue-400 text-lg">🏨</span>
+        </div>
+        <div>
+          <div class="text-white font-semibold text-sm">Hôtel du Parc</div>
+          <div class="text-slate-500 text-xs">Hôtel 3★</div>
+        </div>
+      </div>
+      <div class="glass rounded-xl p-4 flex items-center justify-center gap-3 glass-hover">
+        <div class="w-9 h-9 bg-slate-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-slate-400 text-lg">🔧</span>
+        </div>
+        <div>
+          <div class="text-white font-semibold text-sm">Garage Merlin</div>
+          <div class="text-slate-500 text-xs">Auto</div>
+        </div>
+      </div>
+      <div class="glass rounded-xl p-4 flex items-center justify-center gap-3 glass-hover">
+        <div class="w-9 h-9 bg-pink-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-pink-400 text-lg">✂️</span>
+        </div>
+        <div>
+          <div class="text-white font-semibold text-sm">Studio Elisa</div>
+          <div class="text-slate-500 text-xs">Coiffure</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════
+     PROBLÈME / SOLUTION
+═══════════════════════════════════════════════ -->
+<section id="probleme" class="py-24 relative">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="text-center mb-16">
+      <div class="tag tag-orange mx-auto mb-4 reveal">Le constat</div>
+      <h2 class="text-4xl lg:text-5xl font-black text-white mb-5 reveal" style="transition-delay:0.1s">
+        Sans site web, vous <span class="gradient-text">perdez des clients</span><br/>chaque jour.
+      </h2>
+      <p class="text-slate-400 text-lg max-w-2xl mx-auto reveal" style="transition-delay:0.2s">
+        97% des consommateurs recherchent un commerce local sur Google avant de se déplacer. Sans présence en ligne, vous êtes invisible.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8">
+      <!-- Problems -->
+      <div class="reveal" style="transition-delay:0.1s">
+        <div class="glass rounded-2xl p-8 border border-red-500/10 h-full">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <h3 class="text-white font-bold text-xl">Sans Oxyra</h3>
+          </div>
+          <ul class="space-y-4">
+            <li class="flex items-start gap-3">
+              <span class="text-red-400 mt-1 text-lg">✗</span>
+              <div>
+                <span class="text-white font-medium">Invisible sur Google</span>
+                <p class="text-slate-500 text-sm mt-0.5">Vos concurrents récupèrent les clients qui vous cherchent.</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-red-400 mt-1 text-lg">✗</span>
+              <div>
+                <span class="text-white font-medium">Pas de réservation 24h/24</span>
+                <p class="text-slate-500 text-sm mt-0.5">Vous perdez des réservations en dehors des heures d'ouverture.</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-red-400 mt-1 text-lg">✗</span>
+              <div>
+                <span class="text-white font-medium">Image non professionnelle</span>
+                <p class="text-slate-500 text-sm mt-0.5">Un client doute de votre crédibilité et va chez un concurrent.</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-red-400 mt-1 text-lg">✗</span>
+              <div>
+                <span class="text-white font-medium">Dépendance aux réseaux sociaux</span>
+                <p class="text-slate-500 text-sm mt-0.5">L'algorithme décide de votre visibilité — pas vous.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Solutions -->
+      <div class="reveal" style="transition-delay:0.2s">
+        <div class="glass rounded-2xl p-8 border border-green-500/10 h-full">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <h3 class="text-white font-bold text-xl">Avec Oxyra</h3>
+          </div>
+          <ul class="space-y-4">
+            <li class="flex items-start gap-3">
+              <span class="text-green-400 mt-1 text-lg">✓</span>
+              <div>
+                <span class="text-white font-medium">1ère page Google locale</span>
+                <p class="text-slate-500 text-sm mt-0.5">SEO local intégré dès la création pour capter vos clients proches.</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-green-400 mt-1 text-lg">✓</span>
+              <div>
+                <span class="text-white font-medium">Réservation & contact automatiques</span>
+                <p class="text-slate-500 text-sm mt-0.5">Formulaires, bouton WhatsApp, agenda — vos clients agissent.</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-green-400 mt-1 text-lg">✓</span>
+              <div>
+                <span class="text-white font-medium">Design sur-mesure & professionnel</span>
+                <p class="text-slate-500 text-sm mt-0.5">Un site qui reflète votre identité et inspire confiance.</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-green-400 mt-1 text-lg">✓</span>
+              <div>
+                <span class="text-white font-medium">Votre vitrine disponible 24h/24</span>
+                <p class="text-slate-500 text-sm mt-0.5">Vous vendez même quand vous dormez. Hébergement inclus.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Process steps -->
+    <div class="mt-20">
+      <div class="text-center mb-12">
+        <h3 class="text-2xl font-bold text-white reveal">Comment ça se passe ?</h3>
+        <p class="text-slate-400 mt-2 reveal" style="transition-delay:0.1s">Un processus simple, rapide et sans prise de tête.</p>
+      </div>
+      <div class="grid md:grid-cols-4 gap-6">
+        <div class="text-center reveal" style="transition-delay:0.1s">
+          <div class="w-14 h-14 rounded-2xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center mx-auto mb-4 text-2xl">📞</div>
+          <div class="text-orange-400 font-bold text-sm mb-1">Étape 1</div>
+          <div class="text-white font-semibold mb-2">Appel découverte</div>
+          <p class="text-slate-500 text-sm">On fait connaissance et on comprend vos besoins en 15 min.</p>
+        </div>
+        <div class="text-center reveal" style="transition-delay:0.15s">
+          <div class="w-14 h-14 rounded-2xl bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center mx-auto mb-4 text-2xl">🎨</div>
+          <div class="text-cyan-400 font-bold text-sm mb-1">Étape 2</div>
+          <div class="text-white font-semibold mb-2">Design & création</div>
+          <p class="text-slate-500 text-sm">On crée votre site sur-mesure en 48 à 72h maximum.</p>
+        </div>
+        <div class="text-center reveal" style="transition-delay:0.2s">
+          <div class="w-14 h-14 rounded-2xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center mx-auto mb-4 text-2xl">✅</div>
+          <div class="text-orange-400 font-bold text-sm mb-1">Étape 3</div>
+          <div class="text-white font-semibold mb-2">Validation</div>
+          <p class="text-slate-500 text-sm">Vous validez, on corrige jusqu'à ce que vous soyez 100% satisfait.</p>
+        </div>
+        <div class="text-center reveal" style="transition-delay:0.25s">
+          <div class="w-14 h-14 rounded-2xl bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center mx-auto mb-4 text-2xl">🚀</div>
+          <div class="text-cyan-400 font-bold text-sm mb-1">Étape 4</div>
+          <div class="text-white font-semibold mb-2">Mise en ligne</div>
+          <p class="text-slate-500 text-sm">Votre site est en ligne. On s'occupe de tout, nom de domaine inclus.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════
+     OFFRES / PRICING
+═══════════════════════════════════════════════ -->
+<section id="offres" class="py-24 relative">
+  <div class="absolute inset-0 dot-grid opacity-30"></div>
+  <div class="max-w-6xl mx-auto px-4 relative z-10">
+    <div class="text-center mb-16">
+      <div class="tag tag-cyan mx-auto mb-4 reveal">Tarifs transparents</div>
+      <h2 class="text-4xl lg:text-5xl font-black text-white mb-5 reveal" style="transition-delay:0.1s">
+        Choisissez votre <span class="gradient-text">formule</span>
+      </h2>
+      <p class="text-slate-400 text-lg max-w-xl mx-auto reveal" style="transition-delay:0.2s">
+        Pas de surprise. Des prix fixes, un paiement initial puis un abonnement mensuel tout inclus.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6 items-stretch">
+
+      <!-- Essentiel -->
+      <div class="glass rounded-2xl p-8 glass-hover reveal flex flex-col" style="transition-delay:0.1s">
+        <div class="mb-6">
+          <div class="w-12 h-12 rounded-xl bg-slate-700 flex items-center justify-center mb-4 text-xl">⚡</div>
+          <h3 class="text-white font-bold text-2xl mb-1">Essentiel</h3>
+          <p class="text-slate-400 text-sm">Pour démarrer votre présence en ligne.</p>
+        </div>
+
+        <div class="mb-6">
+          <div class="flex items-baseline gap-2 mb-1">
+            <span class="text-4xl font-black text-white">150€</span>
+            <span class="text-slate-400 text-sm">à l'ouverture</span>
+          </div>
+          <div class="text-slate-400 text-sm">puis <span class="text-white font-semibold">9€ / mois</span> tout inclus</div>
+        </div>
+
+        <div class="divider mb-6"></div>
+
+        <ul class="space-y-3 mb-8 flex-1">
+          <li class="flex items-center gap-2.5 text-sm text-slate-300">
+            <svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Site vitrine 1 à 3 pages
+          </li>
+          <li class="flex items-center gap-2.5 text-sm text-slate-300">
+            <svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Design responsive mobile
+          </li>
+          <li class="flex items-center gap-2.5 text-sm text-slate-300">
+            <svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Formulaire de contact
+          </li>
+          <li class="flex items-center gap-2.5 text-sm text-slate-300">
+            <svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Hébergement & nom de domaine
+          </li>
+          <li class="flex items-center gap-2.5 text-sm text-slate-300">
+            <svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Certificat SSL (HTTPS)
+          </li>
+          <li class="flex items-center gap-2.5 text-sm text-slate-500">
+            <svg class="w-4 h-4 text-slate-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            SEO avancé
+          </li>
+          <li class="flex items-center gap-2.5 text-sm text-slate-500">
+            <svg class="w-4 h-4 text-slate-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            Blog / actualités
+          </li>
+        </ul>
+
+        <a href="#contact" class="btn-secondary justify-center text-center w-full">Démarrer →</a>
+      </div>
+
+      <!-- Professionnel (featured) -->
+      <div class="card-featured rounded-2xl p-8 relative flex flex-col reveal" style="transition-delay:0.15s; transform: translateY(-8px);">
+        <!-- Badge -->
+        <div class="price-badge">
+          <span class="tag tag-orange">⭐ Le plus populaire</span>
+        </div>
+
+        <div class="mb-6 mt-2">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center mb-4 text-xl shadow-lg">🚀</div>
+          <h3 class="text-white font-bold text-2xl mb-1">Professionnel</h3>
+          <p class="text-slate-400 text-sm">Le choix idéal pour les commerces actifs.</p>
+        </div>
+
+        <div class="mb-6">
+          <div class="flex items-baseline gap-2 mb-1">
+            <span class="text-4xl font-black gradient-text-orange">390€</span>
+            <span class="text-slate-400 text-sm">à l'ouverture</span>
+          </div>
+          <div class="text-slate-400 text-sm">puis <span class="text-white font-semibold">19€ / mois</span> tout inclus</div>
+        </div>
+
+        <div class="divider mb-6"></div>
+
+        <ul class="space-y-3 mb-8 flex-1">
+          <li class="flex items-center gap-2.5 text-sm text-slate-300">
+            <svg class="w-4 h-4 text-orange-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Site jusqu'à 6 pages
+          </li>
+          <li class="flex items-center gap-2.5 text-sm text-slate-300">
+            <svg class="w-4 h-4 text-orange-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Design premium sur-mesure
+          </li>
+          <li class="flex items-center gap-2.5 text-sm text-slate-300">
+            <svg class="w-4 h-4 text-orange-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            SEO local optimisé
+          </li>
+          <li class="flex items-center gap-2.5 text-sm text-slate-300">
+            <svg class="w-4 h-4 text-orange-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Blog & actualités
+          </li>
+          <li class="flex items-center gap-2.5 text-sm text-slate-300">
+            <svg class="w-4 h-4 text-orange-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Google Analytics intégré
+          </li>
+          <li class="flex items-center gap-2.5 text-sm text-slate-300">
+            <svg class="w-4 h-4 text-orange-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Galerie photos + carte Google Maps
+          </li>
+          <li class="flex items-center gap-2.5 text-sm text-slate-300">
+            <svg class="w-4 h-4 text-orange-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Support prioritaire email
+          </li>
+        </ul>
+
+        <a href="#contact" class="btn-primary justify-center text-center w-full">Choisir cette formule →</a>
+      </div>
+
+      <!-- Prime -->
+      <div class="glass rounded-2xl p-8 glass-hover reveal flex flex-col" style="transition-delay:0.2s">
+        <div class="mb-6">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-600 to-cyan-500 flex items-center justify-center mb-4 text-xl shadow-lg">💎</div>
+          <h3 class="text-white font-bold text-2xl mb-1">Prime</h3>
+          <p class="text-slate-400 text-sm">Pour les commerces qui veulent dominer le marché local.</p>
+        </div>
+
+        <div class="mb-6">
+          <div class="flex items-baseline gap-2 mb-1">
+            <span class="text-4xl font-black text-cyan-400">790€</span>
+            <span class="text-slate-400 text-sm">à l'ouverture</span>
+          </div>
+          <div class="text-slate-400 text-sm">puis <span class="text-white font-semibold">39€ / mois</span> tout inclus</div>
+        </div>
+
+        <div class="divider mb-6"></div>
+
+        <ul class="space-y-3 mb-8 flex-1">
+          <li class="flex items-center gap-2.5 text-sm text-slate-300">
+            <svg class="w-4 h-4 text-cyan-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Site complet sans limite de pages
+          </li>
+          <li class="flex items-center gap-2.5 text-sm text-slate-300">
+            <svg class="w-4 h-4 text-cyan-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            E-commerce / prise de commande
+          </li>
+          <li class="flex items-center gap-2.5 text-sm text-slate-300">
+            <svg class="w-4 h-4 text-cyan-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Réservation en ligne intégrée
+          </li>
+          <li class="flex items-center gap-2.5 text-sm text-slate-300">
+            <svg class="w-4 h-4 text-cyan-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            SEO avancé + rapport mensuel
+          </li>
+          <li class="flex items-center gap-2.5 text-sm text-slate-300">
+            <svg class="w-4 h-4 text-cyan-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Intégration réseaux sociaux
+          </li>
+          <li class="flex items-center gap-2.5 text-sm text-slate-300">
+            <svg class="w-4 h-4 text-cyan-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Chatbot de réponse automatique
+          </li>
+          <li class="flex items-center gap-2.5 text-sm text-slate-300">
+            <svg class="w-4 h-4 text-cyan-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Support téléphonique dédié
+          </li>
+        </ul>
+
+        <a href="#contact" class="btn-secondary justify-center text-center w-full border-cyan-500/30 hover:border-cyan-500">Démarrer →</a>
+      </div>
+    </div>
+
+    <!-- Reassurance -->
+    <div class="mt-10 flex flex-wrap justify-center gap-6 text-sm text-slate-400 reveal" style="transition-delay:0.3s">
+      <span class="flex items-center gap-2"><span class="text-green-400">✓</span> Aucun engagement</span>
+      <span class="flex items-center gap-2"><span class="text-green-400">✓</span> Résiliation à tout moment</span>
+      <span class="flex items-center gap-2"><span class="text-green-400">✓</span> Satisfait ou remboursé (30j)</span>
+      <span class="flex items-center gap-2"><span class="text-green-400">✓</span> Vous gardez votre domaine</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════
+     PORTFOLIO
+═══════════════════════════════════════════════ -->
+<section id="portfolio" class="py-24">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="text-center mb-16">
+      <div class="tag tag-orange mx-auto mb-4 reveal">Nos réalisations</div>
+      <h2 class="text-4xl lg:text-5xl font-black text-white mb-5 reveal" style="transition-delay:0.1s">
+        Des sites qui <span class="gradient-text">convertissent</span>
+      </h2>
+      <p class="text-slate-400 text-lg max-w-xl mx-auto reveal" style="transition-delay:0.2s">
+        Quelques exemples de sites créés pour des commerces d'Orléans et du Loiret.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <!-- Card 1 - Restaurant -->
+      <div class="portfolio-card glass border border-white/10 reveal" style="height:260px; transition-delay:0.1s">
+        <div class="w-full h-full portfolio-img" style="background: linear-gradient(135deg, #1a0508 0%, #3d0d1a 50%, #1a0a05 100%); display:flex; align-items:center; justify-content:center; flex-direction:column; gap:12px; position:relative; overflow:hidden;">
+          <div style="position:absolute; inset:0; background:radial-gradient(circle at 30% 40%, rgba(239,68,68,0.15) 0%, transparent 60%);"></div>
+          <div style="font-size:3.5rem; filter:drop-shadow(0 0 20px rgba(239,68,68,0.4));">🍝</div>
+          <div style="text-align:center;">
+            <div style="color:#fca5a5; font-size:1.25rem; font-weight:800; letter-spacing:-0.02em;">La Trattoria</div>
+            <div style="color:#94a3b8; font-size:0.75rem; margin-top:4px;">restaurant-trattoria-orleans.fr</div>
+          </div>
+          <div style="position:absolute; bottom:16px; left:16px; right:16px; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.2); border-radius:8px; padding:8px 12px; display:flex; justify-content:space-between; font-size:0.7rem;">
+            <span style="color:#fca5a5;">⭐ 4.9 · 127 avis</span>
+            <span style="color:#94a3b8;">Table en ligne ✓</span>
+          </div>
+        </div>
+        <div class="portfolio-overlay">
+          <div>
+            <div class="text-orange-400 text-xs font-bold uppercase mb-1">Restaurant</div>
+            <div class="text-white font-bold text-lg mb-1">La Trattoria</div>
+            <div class="text-slate-300 text-sm">Menu en ligne, réservation, galerie plats</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 - Hôtel -->
+      <div class="portfolio-card glass border border-white/10 reveal" style="height:260px; transition-delay:0.15s">
+        <div class="w-full h-full portfolio-img" style="background: linear-gradient(135deg, #050d1a 0%, #0a1e3d 50%, #051a2d 100%); display:flex; align-items:center; justify-content:center; flex-direction:column; gap:12px; position:relative; overflow:hidden;">
+          <div style="position:absolute; inset:0; background:radial-gradient(circle at 70% 30%, rgba(59,130,246,0.12) 0%, transparent 60%);"></div>
+          <div style="font-size:3.5rem; filter:drop-shadow(0 0 20px rgba(59,130,246,0.4));">🏨</div>
+          <div style="text-align:center;">
+            <div style="color:#93c5fd; font-size:1.25rem; font-weight:800; letter-spacing:-0.02em;">Hôtel du Parc</div>
+            <div style="color:#94a3b8; font-size:0.75rem; margin-top:4px;">hotelduparc-orleans.fr</div>
+          </div>
+          <div style="position:absolute; bottom:16px; left:16px; right:16px; background:rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.2); border-radius:8px; padding:8px 12px; display:flex; justify-content:space-between; font-size:0.7rem;">
+            <span style="color:#93c5fd;">Disponibilités en temps réel</span>
+            <span style="color:#94a3b8;">Résa ✓</span>
+          </div>
+        </div>
+        <div class="portfolio-overlay">
+          <div>
+            <div class="text-cyan-400 text-xs font-bold uppercase mb-1">Hôtel</div>
+            <div class="text-white font-bold text-lg mb-1">Hôtel du Parc</div>
+            <div class="text-slate-300 text-sm">Réservation en ligne, photos, avis clients</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 - Garage -->
+      <div class="portfolio-card glass border border-white/10 reveal" style="height:260px; transition-delay:0.2s">
+        <div class="w-full h-full portfolio-img" style="background: linear-gradient(135deg, #0f0f0f 0%, #1c1c1c 50%, #111111 100%); display:flex; align-items:center; justify-content:center; flex-direction:column; gap:12px; position:relative; overflow:hidden;">
+          <div style="position:absolute; inset:0; background:radial-gradient(circle at 50% 50%, rgba(234,179,8,0.08) 0%, transparent 60%);"></div>
+          <div style="font-size:3.5rem; filter:drop-shadow(0 0 20px rgba(234,179,8,0.4));">🔧</div>
+          <div style="text-align:center;">
+            <div style="color:#fde68a; font-size:1.25rem; font-weight:800; letter-spacing:-0.02em;">Garage Merlin</div>
+            <div style="color:#94a3b8; font-size:0.75rem; margin-top:4px;">garagemerlin.fr</div>
+          </div>
+          <div style="position:absolute; bottom:16px; left:16px; right:16px; background:rgba(234,179,8,0.08); border:1px solid rgba(234,179,8,0.2); border-radius:8px; padding:8px 12px; display:flex; justify-content:space-between; font-size:0.7rem;">
+            <span style="color:#fde68a;">Devis en ligne</span>
+            <span style="color:#94a3b8;">RDV ✓</span>
+          </div>
+        </div>
+        <div class="portfolio-overlay">
+          <div>
+            <div class="text-yellow-400 text-xs font-bold uppercase mb-1">Garage</div>
+            <div class="text-white font-bold text-lg mb-1">Garage Merlin</div>
+            <div class="text-slate-300 text-sm">Devis en ligne, services, prise de RDV</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4 - Salon de coiffure -->
+      <div class="portfolio-card glass border border-white/10 reveal" style="height:260px; transition-delay:0.25s">
+        <div class="w-full h-full portfolio-img" style="background: linear-gradient(135deg, #1a0a1a 0%, #2d0a2d 50%, #1a051a 100%); display:flex; align-items:center; justify-content:center; flex-direction:column; gap:12px; position:relative; overflow:hidden;">
+          <div style="position:absolute; inset:0; background:radial-gradient(circle at 40% 60%, rgba(168,85,247,0.15) 0%, transparent 60%);"></div>
+          <div style="font-size:3.5rem; filter:drop-shadow(0 0 20px rgba(168,85,247,0.4));">✂️</div>
+          <div style="text-align:center;">
+            <div style="color:#d8b4fe; font-size:1.25rem; font-weight:800; letter-spacing:-0.02em;">Studio Elisa</div>
+            <div style="color:#94a3b8; font-size:0.75rem; margin-top:4px;">studio-elisa.fr</div>
+          </div>
+          <div style="position:absolute; bottom:16px; left:16px; right:16px; background:rgba(168,85,247,0.1); border:1px solid rgba(168,85,247,0.2); border-radius:8px; padding:8px 12px; display:flex; justify-content:space-between; font-size:0.7rem;">
+            <span style="color:#d8b4fe;">Agenda Planity intégré</span>
+            <span style="color:#94a3b8;">RDV 24h ✓</span>
+          </div>
+        </div>
+        <div class="portfolio-overlay">
+          <div>
+            <div class="text-purple-400 text-xs font-bold uppercase mb-1">Salon de coiffure</div>
+            <div class="text-white font-bold text-lg mb-1">Studio Elisa</div>
+            <div class="text-slate-300 text-sm">Galerie, réservation Planity, avis Google</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 5 - Boulangerie -->
+      <div class="portfolio-card glass border border-white/10 reveal" style="height:260px; transition-delay:0.3s">
+        <div class="w-full h-full portfolio-img" style="background: linear-gradient(135deg, #1a0e05 0%, #3d2208 50%, #1a1205 100%); display:flex; align-items:center; justify-content:center; flex-direction:column; gap:12px; position:relative; overflow:hidden;">
+          <div style="position:absolute; inset:0; background:radial-gradient(circle at 60% 40%, rgba(249,115,22,0.15) 0%, transparent 60%);"></div>
+          <div style="font-size:3.5rem; filter:drop-shadow(0 0 20px rgba(249,115,22,0.4));">🥐</div>
+          <div style="text-align:center;">
+            <div style="color:#fdba74; font-size:1.25rem; font-weight:800; letter-spacing:-0.02em;">Boulangerie Martin</div>
+            <div style="color:#94a3b8; font-size:0.75rem; margin-top:4px;">boulangerie-martin-45.fr</div>
+          </div>
+          <div style="position:absolute; bottom:16px; left:16px; right:16px; background:rgba(249,115,22,0.1); border:1px solid rgba(249,115,22,0.2); border-radius:8px; padding:8px 12px; display:flex; justify-content:space-between; font-size:0.7rem;">
+            <span style="color:#fdba74;">Click & Collect</span>
+            <span style="color:#94a3b8;">Commande ✓</span>
+          </div>
+        </div>
+        <div class="portfolio-overlay">
+          <div>
+            <div class="text-orange-400 text-xs font-bold uppercase mb-1">Boulangerie</div>
+            <div class="text-white font-bold text-lg mb-1">Boulangerie Martin</div>
+            <div class="text-slate-300 text-sm">Click & Collect, carte produits, horaires</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 6 - Spa / Bien-être -->
+      <div class="portfolio-card glass border border-white/10 reveal" style="height:260px; transition-delay:0.35s">
+        <div class="w-full h-full portfolio-img" style="background: linear-gradient(135deg, #050f0a 0%, #091a12 50%, #050f0a 100%); display:flex; align-items:center; justify-content:center; flex-direction:column; gap:12px; position:relative; overflow:hidden;">
+          <div style="position:absolute; inset:0; background:radial-gradient(circle at 50% 40%, rgba(16,185,129,0.12) 0%, transparent 60%);"></div>
+          <div style="font-size:3.5rem; filter:drop-shadow(0 0 20px rgba(16,185,129,0.4));">🌿</div>
+          <div style="text-align:center;">
+            <div style="color:#6ee7b7; font-size:1.25rem; font-weight:800; letter-spacing:-0.02em;">Zen & Nature</div>
+            <div style="color:#94a3b8; font-size:0.75rem; margin-top:4px;">zen-nature-spa.fr</div>
+          </div>
+          <div style="position:absolute; bottom:16px; left:16px; right:16px; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.2); border-radius:8px; padding:8px 12px; display:flex; justify-content:space-between; font-size:0.7rem;">
+            <span style="color:#6ee7b7;">Carte soins + tarifs</span>
+            <span style="color:#94a3b8;">Résa ✓</span>
+          </div>
+        </div>
+        <div class="portfolio-overlay">
+          <div>
+            <div class="text-emerald-400 text-xs font-bold uppercase mb-1">Spa & Bien-être</div>
+            <div class="text-white font-bold text-lg mb-1">Zen & Nature</div>
+            <div class="text-slate-300 text-sm">Carte des soins, booking, galerie</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-10 reveal">
+      <a href="#contact" class="btn-secondary inline-flex">Voir tous nos projets →</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════
+     TESTIMONIALS
+═══════════════════════════════════════════════ -->
+<section class="py-20 bg-navy-800/30">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-black text-white mb-3 reveal">Ce que disent nos clients</h2>
+      <div class="flex items-center justify-center gap-1 reveal" style="transition-delay:0.1s">
+        <span class="text-orange-400 text-xl">★★★★★</span>
+        <span class="text-white font-semibold ml-2">4.9 / 5</span>
+        <span class="text-slate-400 ml-2">· 48 avis</span>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="glass rounded-2xl p-6 glass-hover reveal" style="transition-delay:0.1s">
+        <div class="flex text-orange-400 text-sm mb-4">★★★★★</div>
+        <p class="text-slate-300 text-sm leading-relaxed mb-5 italic">"Oxyra a transformé notre restaurant en ligne. On reçoit maintenant 30 réservations de plus par semaine grâce au site. Service au top, livré en 2 jours !"</p>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white font-bold text-sm">M</div>
+          <div>
+            <div class="text-white font-semibold text-sm">Marco B.</div>
+            <div class="text-slate-500 text-xs">La Trattoria, Orléans</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass rounded-2xl p-6 glass-hover reveal" style="transition-delay:0.15s">
+        <div class="flex text-orange-400 text-sm mb-4">★★★★★</div>
+        <p class="text-slate-300 text-sm leading-relaxed mb-5 italic">"Pour 390€ on a eu un site professionnel qu'on n'aurait jamais pu se payer ailleurs. L'abonnement à 19€/mois c'est rien comparé aux clients que ça ramène."</p>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white font-bold text-sm">C</div>
+          <div>
+            <div class="text-white font-semibold text-sm">Christine L.</div>
+            <div class="text-slate-500 text-xs">Hôtel du Parc, Olivet</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass rounded-2xl p-6 glass-hover reveal" style="transition-delay:0.2s">
+        <div class="flex text-orange-400 text-sm mb-4">★★★★★</div>
+        <p class="text-slate-300 text-sm leading-relaxed mb-5 italic">"Super réactifs, ils ont su capter exactement l'ambiance qu'on voulait pour le salon. Les clientes trouvent facilement nos tarifs et réservent directement !"</p>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm">E</div>
+          <div>
+            <div class="text-white font-semibold text-sm">Elisa M.</div>
+            <div class="text-slate-500 text-xs">Studio Elisa, Orléans</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════
+     FAQ
+═══════════════════════════════════════════════ -->
+<section id="faq" class="py-24">
+  <div class="max-w-3xl mx-auto px-4">
+    <div class="text-center mb-16">
+      <div class="tag tag-orange mx-auto mb-4 reveal">Questions fréquentes</div>
+      <h2 class="text-4xl font-black text-white reveal" style="transition-delay:0.1s">
+        Tout ce que vous <span class="gradient-text">voulez savoir</span>
+      </h2>
+    </div>
+
+    <div class="space-y-3" id="faq-container">
+
+      <div class="faq-item glass rounded-2xl overflow-hidden reveal" style="transition-delay:0.1s">
+        <button class="faq-trigger w-full px-6 py-5 flex items-center justify-between text-left">
+          <span class="text-white font-semibold pr-4">Combien de temps pour créer mon site ?</span>
+          <svg class="faq-icon w-5 h-5 text-orange-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        </button>
+        <div class="faq-answer px-6 pb-0">
+          <p class="text-slate-400 pb-5 text-sm leading-relaxed">En général, nous livrons votre site en 48 à 72 heures après l'appel découverte. Pour les formules Prime avec des fonctionnalités avancées (e-commerce, réservation), comptez 5 à 7 jours ouvrés. Vous serez tenu informé à chaque étape.</p>
+        </div>
+      </div>
+
+      <div class="faq-item glass rounded-2xl overflow-hidden reveal" style="transition-delay:0.15s">
+        <button class="faq-trigger w-full px-6 py-5 flex items-center justify-between text-left">
+          <span class="text-white font-semibold pr-4">Est-ce que je peux modifier mon site moi-même ?</span>
+          <svg class="faq-icon w-5 h-5 text-orange-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        </button>
+        <div class="faq-answer px-6 pb-0">
+          <p class="text-slate-400 pb-5 text-sm leading-relaxed">Oui ! Nous vous donnons accès à un tableau de bord simple pour modifier vos textes, photos, horaires et menus sans aucune connaissance technique. Pour les modifications plus complexes (structure, design), notre équipe s'en charge gratuitement pour les abonnés Prime.</p>
+        </div>
+      </div>
+
+      <div class="faq-item glass rounded-2xl overflow-hidden reveal" style="transition-delay:0.2s">
+        <button class="faq-trigger w-full px-6 py-5 flex items-center justify-between text-left">
+          <span class="text-white font-semibold pr-4">Que se passe-t-il si je veux changer de formule ?</span>
+          <svg class="faq-icon w-5 h-5 text-orange-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        </button>
+        <div class="faq-answer px-6 pb-0">
+          <p class="text-slate-400 pb-5 text-sm leading-relaxed">Vous pouvez upgrader ou downgrader votre formule à tout moment. En cas d'upgrade, vous ne payez que la différence de l'investissement initial. En cas de downgrade, le nouveau tarif mensuel s'applique dès le prochain cycle de facturation.</p>
+        </div>
+      </div>
+
+      <div class="faq-item glass rounded-2xl overflow-hidden reveal" style="transition-delay:0.25s">
+        <button class="faq-trigger w-full px-6 py-5 flex items-center justify-between text-left">
+          <span class="text-white font-semibold pr-4">Le nom de domaine et l'hébergement sont inclus ?</span>
+          <svg class="faq-icon w-5 h-5 text-orange-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        </button>
+        <div class="faq-answer px-6 pb-0">
+          <p class="text-slate-400 pb-5 text-sm leading-relaxed">Oui, tout est compris dans l'abonnement mensuel : hébergement haute performance, certificat SSL (cadenas vert), nom de domaine en .fr, sauvegardes quotidiennes et mises à jour de sécurité. Vous n'avez rien d'autre à payer.</p>
+        </div>
+      </div>
+
+      <div class="faq-item glass rounded-2xl overflow-hidden reveal" style="transition-delay:0.3s">
+        <button class="faq-trigger w-full px-6 py-5 flex items-center justify-between text-left">
+          <span class="text-white font-semibold pr-4">Que se passe-t-il si j'arrête l'abonnement ?</span>
+          <svg class="faq-icon w-5 h-5 text-orange-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        </button>
+        <div class="faq-answer px-6 pb-0">
+          <p class="text-slate-400 pb-5 text-sm leading-relaxed">Vous pouvez résilier à tout moment, sans frais ni préavis. Vous récupérez votre nom de domaine et les fichiers de votre site pour les héberger où vous le souhaitez. Vous gardez votre travail, c'est votre propriété.</p>
+        </div>
+      </div>
+
+      <div class="faq-item glass rounded-2xl overflow-hidden reveal" style="transition-delay:0.35s">
+        <button class="faq-trigger w-full px-6 py-5 flex items-center justify-between text-left">
+          <span class="text-white font-semibold pr-4">Êtes-vous disponibles pour les commerces hors d'Orléans ?</span>
+          <svg class="faq-icon w-5 h-5 text-orange-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        </button>
+        <div class="faq-answer px-6 pb-0">
+          <p class="text-slate-400 pb-5 text-sm leading-relaxed">Absolument ! Bien qu'implantés à Orléans, nous travaillons avec des commerces dans tout le Loiret et en France entière. Tout se fait par visioconférence et email, nous nous déplaçons sur demande dans un rayon de 50 km autour d'Orléans.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════
+     CONTACT / CTA
+═══════════════════════════════════════════════ -->
+<section id="contact" class="py-24 relative overflow-hidden">
+  <div class="hero-glow w-[400px] h-[400px] bg-orange-500 top-0 left-1/4 opacity-10"></div>
+  <div class="hero-glow w-[300px] h-[300px] bg-cyan-500 bottom-0 right-1/4 opacity-10"></div>
+
+  <div class="max-w-6xl mx-auto px-4 relative z-10">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+      <!-- Left -->
+      <div class="reveal">
+        <div class="tag tag-orange mb-6">Passons à l'action</div>
+        <h2 class="text-4xl lg:text-5xl font-black text-white mb-6 leading-tight">
+          Votre site web,<br/>
+          <span class="gradient-text">livré en 72h.</span>
+        </h2>
+        <p class="text-slate-400 text-lg mb-8 leading-relaxed">
+          Demandez un devis gratuit et sans engagement. On vous répond sous <strong class="text-white">2 heures</strong> en jours ouvrés.
+        </p>
+
+        <div class="space-y-4 mb-8">
+          <div class="flex items-center gap-3 text-slate-300">
+            <div class="w-8 h-8 rounded-lg bg-orange-500/20 flex items-center justify-center flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            </div>
+            <span class="text-sm">contact@oxyra.agency</span>
+          </div>
+          <div class="flex items-center gap-3 text-slate-300">
+            <div class="w-8 h-8 rounded-lg bg-orange-500/20 flex items-center justify-center flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+            </div>
+            <span class="text-sm">02 38 XX XX XX</span>
+          </div>
+          <div class="flex items-center gap-3 text-slate-300">
+            <div class="w-8 h-8 rounded-lg bg-orange-500/20 flex items-center justify-center flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            </div>
+            <span class="text-sm">Orléans, Loiret (45) — France</span>
+          </div>
+        </div>
+
+        <!-- Opening hours -->
+        <div class="glass rounded-xl p-4 text-sm">
+          <div class="text-white font-semibold mb-2 flex items-center gap-2">
+            <span class="w-2 h-2 bg-green-400 rounded-full inline-block animate-pulse"></span>
+            Disponibles maintenant
+          </div>
+          <div class="text-slate-400">Lun – Ven : 9h → 18h30</div>
+          <div class="text-slate-500 text-xs mt-1">Réponse sous 2h garanti en jours ouvrés</div>
+        </div>
+      </div>
+
+      <!-- Right – form -->
+      <div class="reveal" style="transition-delay:0.1s">
+        <div class="gradient-border rounded-2xl p-8">
+          <!-- Success message -->
+          <div id="form-success" class="hidden items-center justify-center flex-col gap-4 py-8 text-center">
+            <div class="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center text-3xl">✅</div>
+            <h3 class="text-white font-bold text-xl">Message envoyé !</h3>
+            <p class="text-slate-400 text-sm">On vous répond sous 2 heures en jours ouvrés.</p>
+            <button onclick="resetForm()" class="btn-secondary text-sm py-2 px-4">Envoyer un autre message</button>
+          </div>
+
+          <!-- Form -->
+          <form id="contact-form" onsubmit="handleSubmit(event)" class="space-y-5">
+            <div>
+              <label class="block text-slate-300 text-sm font-medium mb-2">Votre commerce *</label>
+              <input type="text" class="form-input" placeholder="Ex : Restaurant Le Soleil" required />
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-slate-300 text-sm font-medium mb-2">Prénom *</label>
+                <input type="text" class="form-input" placeholder="Marc" required />
+              </div>
+              <div>
+                <label class="block text-slate-300 text-sm font-medium mb-2">Nom *</label>
+                <input type="text" class="form-input" placeholder="Dupont" required />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-slate-300 text-sm font-medium mb-2">Email *</label>
+              <input type="email" class="form-input" placeholder="marc@moncommerce.fr" required />
+            </div>
+
+            <div>
+              <label class="block text-slate-300 text-sm font-medium mb-2">Téléphone</label>
+              <input type="tel" class="form-input" placeholder="06 XX XX XX XX" />
+            </div>
+
+            <div>
+              <label class="block text-slate-300 text-sm font-medium mb-2">Formule souhaitée</label>
+              <select class="form-input">
+                <option value="" style="background:#0f1528">Je ne sais pas encore</option>
+                <option value="essentiel" style="background:#0f1528">Essentiel – 150€ + 9€/mois</option>
+                <option value="pro" style="background:#0f1528">Professionnel – 390€ + 19€/mois</option>
+                <option value="prime" style="background:#0f1528">Prime – 790€ + 39€/mois</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-slate-300 text-sm font-medium mb-2">Votre message</label>
+              <textarea class="form-input resize-none" rows="3" placeholder="Décrivez votre projet, vos besoins, vos questions..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary w-full justify-center text-base py-4">
+              Envoyer ma demande gratuite
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+            </button>
+
+            <p class="text-slate-500 text-xs text-center">Aucun engagement. Devis gratuit et sans obligation.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════ -->
+<footer class="border-t border-white/05 pt-16 pb-8">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="grid md:grid-cols-4 gap-10 mb-12">
+      <!-- Brand -->
+      <div class="md:col-span-1">
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-orange-500 to-cyan-500 flex items-center justify-center shadow-lg">
+            <span class="text-white font-black text-lg">O</span>
+          </div>
+          <span class="text-white font-bold text-xl">Oxyra<span class="gradient-text">.</span></span>
+        </div>
+        <p class="text-slate-500 text-sm leading-relaxed mb-4">
+          Agence web à Orléans spécialisée dans les sites pour petits commerces. Simple, rapide, efficace.
+        </p>
+        <div class="flex gap-3">
+          <a href="#" class="w-9 h-9 rounded-lg glass border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:border-white/30 transition-all" aria-label="Instagram">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          </a>
+          <a href="#" class="w-9 h-9 rounded-lg glass border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:border-white/30 transition-all" aria-label="LinkedIn">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+          </a>
+          <a href="#" class="w-9 h-9 rounded-lg glass border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:border-white/30 transition-all" aria-label="Facebook">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Services -->
+      <div>
+        <h4 class="text-white font-semibold mb-4 text-sm">Services</h4>
+        <ul class="space-y-2.5 text-sm text-slate-400">
+          <li><a href="#offres" class="hover:text-white transition-colors">Formule Essentiel</a></li>
+          <li><a href="#offres" class="hover:text-white transition-colors">Formule Professionnelle</a></li>
+          <li><a href="#offres" class="hover:text-white transition-colors">Formule Prime</a></li>
+          <li><a href="#contact" class="hover:text-white transition-colors">Devis sur-mesure</a></li>
+        </ul>
+      </div>
+
+      <!-- Secteurs -->
+      <div>
+        <h4 class="text-white font-semibold mb-4 text-sm">Secteurs</h4>
+        <ul class="space-y-2.5 text-sm text-slate-400">
+          <li><span>Restaurants & Cafés</span></li>
+          <li><span>Hôtels & Chambres d'hôtes</span></li>
+          <li><span>Garages & Auto</span></li>
+          <li><span>Salons & Bien-être</span></li>
+          <li><span>Boulangeries & Épiceries</span></li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <h4 class="text-white font-semibold mb-4 text-sm">Contact</h4>
+        <ul class="space-y-2.5 text-sm text-slate-400">
+          <li class="flex items-start gap-2">
+            <span class="text-orange-400 mt-0.5">📍</span>
+            Orléans, Loiret (45)
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-orange-400 mt-0.5">✉️</span>
+            contact@oxyra.agency
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-orange-400 mt-0.5">📞</span>
+            02 38 XX XX XX
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="divider mb-8"></div>
+
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-500">
+      <span>© 2025 Oxyra Agency. Tous droits réservés. Orléans, France.</span>
+      <div class="flex gap-6">
+        <a href="#" class="hover:text-white transition-colors">Mentions légales</a>
+        <a href="#" class="hover:text-white transition-colors">CGV</a>
+        <a href="#" class="hover:text-white transition-colors">Politique de confidentialité</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ═══════════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════════ -->
+<script>
+// ── Navbar scroll effect ──────────────────────────────────────
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 40) {
+    navbar.classList.add('nav-scrolled');
+  } else {
+    navbar.classList.remove('nav-scrolled');
+  }
+}, { passive: true });
+
+
+// ── Mobile menu ───────────────────────────────────────────────
+const menuToggle = document.getElementById('menu-toggle');
+const mobileMenu = document.getElementById('mobile-menu');
+const menuOverlay = document.getElementById('menu-overlay');
+const menuLines = document.querySelectorAll('.menu-line');
+
+function openMenu() {
+  mobileMenu.classList.add('open');
+  menuOverlay.classList.remove('hidden');
+  menuLines[0].style.cssText = 'transform: rotate(45deg) translateY(8px)';
+  menuLines[1].style.cssText = 'opacity:0';
+  menuLines[2].style.cssText = 'transform: rotate(-45deg) translateY(-8px); width:24px';
+}
+
+function closeMenu() {
+  mobileMenu.classList.remove('open');
+  menuOverlay.classList.add('hidden');
+  menuLines[0].style.cssText = '';
+  menuLines[1].style.cssText = '';
+  menuLines[2].style.cssText = '';
+}
+
+menuToggle.addEventListener('click', () => {
+  mobileMenu.classList.contains('open') ? closeMenu() : openMenu();
+});
+menuOverlay.addEventListener('click', closeMenu);
+document.querySelectorAll('.mobile-link').forEach(el => el.addEventListener('click', closeMenu));
+
+
+// ── Scroll reveal ─────────────────────────────────────────────
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// Trigger hero reveals immediately
+setTimeout(() => {
+  document.querySelectorAll('#hero .reveal').forEach(el => el.classList.add('visible'));
+}, 100);
+
+
+// ── Counter animation ─────────────────────────────────────────
+function animateCounter(el, target, duration = 1500) {
+  let start = 0;
+  const step = (timestamp) => {
+    if (!start) start = timestamp;
+    const progress = Math.min((timestamp - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.floor(eased * target);
+    if (progress < 1) requestAnimationFrame(step);
+    else el.textContent = target;
+  };
+  requestAnimationFrame(step);
+}
+
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const target = parseInt(entry.target.dataset.target);
+      animateCounter(entry.target, target);
+      counterObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('[data-target]').forEach(el => counterObserver.observe(el));
+
+
+// ── FAQ accordion ─────────────────────────────────────────────
+document.querySelectorAll('.faq-trigger').forEach(trigger => {
+  trigger.addEventListener('click', () => {
+    const item = trigger.closest('.faq-item');
+    const answer = item.querySelector('.faq-answer');
+    const isOpen = item.classList.contains('open');
+
+    // Close all
+    document.querySelectorAll('.faq-item').forEach(i => {
+      i.classList.remove('open');
+      i.querySelector('.faq-answer').classList.remove('open');
+    });
+
+    // Open clicked if it was closed
+    if (!isOpen) {
+      item.classList.add('open');
+      answer.classList.add('open');
+    }
+  });
+});
+
+
+// ── Smooth scroll ─────────────────────────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      const offset = 80;
+      const top = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+  });
+});
+
+
+// ── Contact form ──────────────────────────────────────────────
+function handleSubmit(e) {
+  e.preventDefault();
+  const form = document.getElementById('contact-form');
+  const success = document.getElementById('form-success');
+  form.style.opacity = '0';
+  form.style.transform = 'translateY(-10px)';
+  form.style.transition = 'all 0.3s ease';
+  setTimeout(() => {
+    form.style.display = 'none';
+    success.classList.add('show');
+    success.style.animation = 'fadeUp 0.5s ease forwards';
+  }, 300);
+}
+
+function resetForm() {
+  const form = document.getElementById('contact-form');
+  const success = document.getElementById('form-success');
+  success.classList.remove('show');
+  form.style.display = '';
+  form.style.opacity = '';
+  form.style.transform = '';
+  form.reset();
+}
+
+
+// ── Active nav link on scroll ─────────────────────────────────
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('nav a[href^="#"]');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(section => {
+    if (window.scrollY >= section.offsetTop - 120) {
+      current = section.id;
+    }
+  });
+  navLinks.forEach(link => {
+    link.classList.remove('text-white');
+    link.classList.add('text-slate-400');
+    if (link.getAttribute('href') === `#${current}`) {
+      link.classList.add('text-white');
+      link.classList.remove('text-slate-400');
+    }
+  });
+}, { passive: true });
+</script>
+
+</body>
+</html>
