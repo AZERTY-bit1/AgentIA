@@ -99,8 +99,10 @@
     .section { padding: 72px 20px; }
 
     /* ── Reveal ── */
-    .rev { opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease; }
+    .rev { opacity:0;transform:translateY(56px) scale(.97);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1); }
     .rev.in { opacity:1;transform:none; }
+    .rev-l { opacity:0;transform:translateX(-40px);transition:opacity .65s cubic-bezier(.22,1,.36,1),transform .65s cubic-bezier(.22,1,.36,1); }
+    .rev-l.in { opacity:1;transform:none; }
 
     /* ── Scroll mouse ── */
     .smouse { width:26px;height:42px;border:2px solid rgba(255,255,255,.13);border-radius:13px;margin:0 auto;display:flex;justify-content:center;padding-top:7px; }
@@ -108,13 +110,22 @@
     @keyframes sw { 0%{opacity:1;transform:translateY(0)} 100%{opacity:0;transform:translateY(10px)} }
 
     /* ── Pricing ── */
-    .pc { background:var(--card);border-radius:18px;padding:26px 22px;border:1px solid transparent; }
-    .pc + .pc { margin-top:10px; }
-    .pc.feat { border-color:var(--blue); }
+    .pc { background:var(--card);border-radius:20px;padding:28px 24px;border:1px solid var(--border);transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s; }
+    .pc + .pc { margin-top:12px; }
+    .pc:not(.feat):hover { transform:translateY(-7px);box-shadow:0 28px 70px rgba(0,0,0,.55); }
+    .pc.feat { border-color:var(--blue);animation:featglow 3s ease-in-out infinite; }
+    .pc.feat:hover { transform:translateY(-9px); }
+    @keyframes featglow {
+      0%,100% { box-shadow:0 0 0 1px rgba(37,99,235,.35),0 0 40px rgba(37,99,235,.08); }
+      50%      { box-shadow:0 0 0 1px var(--blue),0 0 70px rgba(37,99,235,.22); }
+    }
     .pbadge { display:inline-block;background:var(--blue);color:#fff;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 11px;border-radius:100px;margin-bottom:14px; }
     .pf { display:flex;align-items:center;gap:10px;font-size:.88rem;color:var(--gray);padding:9px 0;border-bottom:1px solid var(--border); }
     .pf:last-of-type { border-bottom:none; }
     .pf svg { width:15px;height:15px;stroke:var(--blue);flex-shrink:0;fill:none; }
+    /* Price shimmer on featured card */
+    .pamt-feat { background:linear-gradient(90deg,var(--blue) 0%,#93c5fd 50%,var(--blue) 100%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:pshine 3s linear infinite; }
+    @keyframes pshine { 0%{background-position:200% center} 100%{background-position:-200% center} }
 
     /* ── FAQ ── */
     .fi { background:var(--card);border-radius:14px; }
@@ -334,12 +345,12 @@
   <p class="rev gray" style="font-size:.88rem;margin-bottom:30px;line-height:1.65;">Paiement initial + abonnement mensuel tout inclus. Hébergement, domaine, SSL : rien à payer en plus.</p>
 
   <!-- Essentiel -->
-  <div class="pc rev">
+  <div class="pc rev" data-delay="0">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
       <h3 style="font-size:1.05rem;font-weight:700;">Essentiel</h3>
       <div class="ib-sm"><svg stroke-width="1.7" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
     </div>
-    <div style="font-size:2.4rem;font-weight:800;letter-spacing:-.03em;margin-bottom:4px;">150€</div>
+    <div style="font-size:2.4rem;font-weight:800;letter-spacing:-.03em;margin-bottom:4px;"><span class="pcount" data-target="150">150</span>€</div>
     <div class="gray" style="font-size:.85rem;margin-bottom:22px;">à l'ouverture · puis <strong style="color:#fff;">9€/mois</strong></div>
     <div class="pf"><svg stroke-width="2.3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Site vitrine 1 à 3 pages</div>
     <div class="pf"><svg stroke-width="2.3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Design responsive mobile</div>
@@ -350,13 +361,13 @@
   </div>
 
   <!-- Professionnel -->
-  <div class="pc feat rev">
+  <div class="pc feat rev" data-delay="0.13">
     <div class="pbadge">Le plus populaire</div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
       <h3 style="font-size:1.05rem;font-weight:700;">Professionnel</h3>
       <div class="ib-sm" style="background:rgba(37,99,235,.25);"><svg stroke-width="1.7" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
     </div>
-    <div style="font-size:2.4rem;font-weight:800;letter-spacing:-.03em;color:var(--blue);margin-bottom:4px;">390€</div>
+    <div style="font-size:2.4rem;font-weight:800;letter-spacing:-.03em;margin-bottom:4px;"><span class="pcount pamt-feat" data-target="390">390</span>€</div>
     <div class="gray" style="font-size:.85rem;margin-bottom:22px;">à l'ouverture · puis <strong style="color:#fff;">19€/mois</strong></div>
     <div class="pf"><svg stroke-width="2.3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Site jusqu'à 6 pages</div>
     <div class="pf"><svg stroke-width="2.3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Design premium sur-mesure</div>
@@ -369,12 +380,12 @@
   </div>
 
   <!-- Prime -->
-  <div class="pc rev">
+  <div class="pc rev" data-delay="0.26">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
       <h3 style="font-size:1.05rem;font-weight:700;">Prime</h3>
       <div class="ib-sm"><svg stroke-width="1.7" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
     </div>
-    <div style="font-size:2.4rem;font-weight:800;letter-spacing:-.03em;margin-bottom:4px;">790€</div>
+    <div style="font-size:2.4rem;font-weight:800;letter-spacing:-.03em;margin-bottom:4px;"><span class="pcount" data-target="790">790</span>€</div>
     <div class="gray" style="font-size:.85rem;margin-bottom:22px;">à l'ouverture · puis <strong style="color:#fff;">39€/mois</strong></div>
     <div class="pf"><svg stroke-width="2.3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Site complet sans limite de pages</div>
     <div class="pf"><svg stroke-width="2.3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>E-commerce / commande en ligne</div>
@@ -523,13 +534,38 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 
 // Reveal
 const obs = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
-}, { threshold: 0.08, rootMargin: '0px 0px -28px 0px' });
-document.querySelectorAll('.rev').forEach((el, i) => {
-  el.style.transitionDelay = (i % 4) * 0.05 + 's';
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('in');
+      // Counter animation on pricing cards
+      e.target.querySelectorAll && e.target.querySelectorAll('.pcount').forEach(el => countUp(el));
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -24px 0px' });
+
+let revIdx = 0;
+document.querySelectorAll('.rev, .rev-l').forEach(el => {
+  const d = el.dataset.delay;
+  el.style.transitionDelay = d !== undefined ? d + 's' : (revIdx % 5) * 0.07 + 's';
+  revIdx++;
   obs.observe(el);
 });
 setTimeout(() => document.querySelectorAll('section:first-of-type .rev').forEach(el => el.classList.add('in')), 80);
+
+// Price counter
+function countUp(el) {
+  const target = parseInt(el.dataset.target, 10);
+  const duration = 700;
+  const start = performance.now();
+  function step(now) {
+    const progress = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(ease * target);
+    if (progress < 1) requestAnimationFrame(step);
+    else el.textContent = target;
+  }
+  requestAnimationFrame(step);
+}
 
 // FAQ
 document.querySelectorAll('.fb').forEach(btn => {
