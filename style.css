@@ -52,11 +52,51 @@ body { background: #080808; color: #fff; font-family: 'Inter', system-ui, sans-s
 hr { border:none;border-top:1px solid var(--border); }
 .section { padding:72px 20px; }
 
-/* ── Reveal ── */
-.rev { opacity:0;transform:translateY(56px) scale(.97);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1); }
-.rev.in { opacity:1;transform:none; }
-.rev-l { opacity:0;transform:translateX(-40px);transition:opacity .65s cubic-bezier(.22,1,.36,1),transform .65s cubic-bezier(.22,1,.36,1); }
-.rev-l.in { opacity:1;transform:none; }
+/* ── Page transition overlay ── */
+#pt { position:fixed;inset:0;background:#080808;z-index:9999;pointer-events:none;transition:opacity .52s cubic-bezier(.4,0,.2,1); }
+#pt.out { opacity:0; }
+
+/* ── Reveal variants ── */
+.rev   { opacity:0;transform:translateY(64px) scale(.96);transition:opacity .85s cubic-bezier(.22,1,.36,1),transform .85s cubic-bezier(.22,1,.36,1); }
+.rev-r { opacity:0;transform:translateX(60px);transition:opacity .75s cubic-bezier(.22,1,.36,1),transform .75s cubic-bezier(.22,1,.36,1); }
+.rev-l { opacity:0;transform:translateX(-60px);transition:opacity .75s cubic-bezier(.22,1,.36,1),transform .75s cubic-bezier(.22,1,.36,1); }
+.rev-s { opacity:0;transform:scale(.8);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1); }
+.rev.in,.rev-r.in,.rev-l.in,.rev-s.in { opacity:1;transform:none; }
+
+/* ── Float ── */
+@keyframes float  { 0%,100%{transform:translateY(0)}     50%{transform:translateY(-16px)} }
+@keyframes float2 { 0%,100%{transform:translateY(-8px)}  50%{transform:translateY(8px)} }
+.flt  { animation:float  5.5s ease-in-out infinite; }
+.flt2 { animation:float2 7s   ease-in-out infinite .9s; }
+.flt3 { animation:float  4.5s ease-in-out infinite 2s; }
+
+/* ── Spin ── */
+@keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
+.spin-slow { animation:spin 22s linear infinite; }
+.spin-rev  { animation:spin 16s linear infinite reverse; }
+
+/* ── Gradient text ── */
+.gtext { background:linear-gradient(120deg,#2563eb 0%,#93c5fd 45%,#2563eb 100%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gshift 4s linear infinite; }
+@keyframes gshift { 0%{background-position:0% center} 100%{background-position:200% center} }
+
+/* ── Glow pulse ── */
+@keyframes glow-pulse { 0%,100%{filter:drop-shadow(0 0 0px rgba(37,99,235,0))} 50%{filter:drop-shadow(0 0 18px rgba(37,99,235,.6))} }
+.glow-pulse { animation:glow-pulse 2.5s ease-in-out infinite; }
+
+/* ── Stagger delay helpers ── */
+.d1{transition-delay:.07s!important} .d2{transition-delay:.14s!important} .d3{transition-delay:.21s!important}
+.d4{transition-delay:.28s!important} .d5{transition-delay:.35s!important} .d6{transition-delay:.42s!important}
+
+/* ── Dot grid (hero background) ── */
+.dot-grid { position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.055) 1px,transparent 1px);background-size:34px 34px;pointer-events:none; }
+
+/* ── Orb ── */
+.orb { position:absolute;border-radius:50%;pointer-events:none; }
+
+/* ── Nav card shimmer ── */
+.nav-card { position:relative;overflow:hidden; }
+.nav-card::after { content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(37,99,235,.07) 50%,transparent 60%);background-size:200% 100%;background-position:200% 0;transition:background-position .6s ease; }
+.nav-card:hover::after { background-position:-200% 0; }
 
 /* ── Scroll mouse ── */
 .smouse { width:26px;height:42px;border:2px solid rgba(255,255,255,.13);border-radius:13px;margin:0 auto;display:flex;justify-content:center;padding-top:7px; }
