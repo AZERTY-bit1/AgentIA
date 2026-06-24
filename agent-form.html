@@ -145,6 +145,19 @@
     margin-bottom: 20px;
   }
 
+  /* Honeypot — invisible pour les humains, rempli par les bots */
+  .field-trap {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    tab-index: -1;
+  }
+
   label {
     display: block;
     font-size: 12px;
@@ -154,6 +167,18 @@
     color: var(--muted);
     margin-bottom: 8px;
   }
+
+  .char-count {
+    float: right;
+    font-size: 11px;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--muted);
+    opacity: 0.6;
+  }
+
+  .char-count.warn { color: var(--accent2); opacity: 1; }
 
   input[type="text"],
   textarea {
@@ -211,16 +236,16 @@
     background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
   }
 
-  .btn:hover {
+  .btn:hover:not(:disabled) {
     opacity: 0.9;
     transform: translateY(-1px);
     box-shadow: 0 8px 30px rgba(108,99,255,0.45);
   }
 
-  .btn:active { transform: translateY(0); }
+  .btn:active:not(:disabled) { transform: translateY(0); }
 
   .btn:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
     transform: none;
   }
@@ -244,6 +269,35 @@
   @keyframes spin {
     to { transform: rotate(360deg); }
   }
+
+  /* Cooldown bar */
+  .cooldown-bar {
+    display: none;
+    height: 3px;
+    background: var(--border);
+    border-radius: 3px;
+    margin-top: 10px;
+    overflow: hidden;
+  }
+
+  .cooldown-bar.active { display: block; }
+
+  .cooldown-progress {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #8b5cf6);
+    border-radius: 3px;
+    transition: width 1s linear;
+  }
+
+  .cooldown-label {
+    display: none;
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
+  .cooldown-label.active { display: block; }
 
   /* Success state */
   .success-msg {
@@ -308,18 +362,31 @@
 
   <div class="card">
     <div id="form-area">
+      <!-- Honeypot : invisible pour les humains, rempli par les bots -->
+      <div class="field-trap" aria-hidden="true">
+        <label for="website">Ne pas remplir</label>
+        <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+      </div>
+
       <div class="field">
-        <label>Ton nom</label>
-        <input type="text" id="name" placeholder="Ex: Jean Dupont" autocomplete="off">
+        <label for="name">Ton nom <span class="char-count" id="nameCount">0 / 100</span></label>
+        <input type="text" id="name" name="name" placeholder="Ex: Jean Dupont"
+               autocomplete="off" maxlength="100">
       </div>
       <div class="field">
-        <label>Ton message</label>
-        <textarea id="message" placeholder="Décris ta question, ton projet, ou ce dont tu as besoin…"></textarea>
+        <label for="message">Ton message <span class="char-count" id="msgCount">0 / 2000</span></label>
+        <textarea id="message" name="message"
+                  placeholder="Décris ta question, ton projet, ou ce dont tu as besoin…"
+                  maxlength="2000"></textarea>
       </div>
       <button class="btn" id="sendBtn" onclick="sendMessage()">
         <span class="btn-text">Envoyer →</span>
         <div class="spinner"></div>
       </button>
+      <div class="cooldown-bar" id="cooldownBar">
+        <div class="cooldown-progress" id="cooldownProgress"></div>
+      </div>
+      <div class="cooldown-label" id="cooldownLabel"></div>
       <div class="error-msg" id="errorMsg">❌ Une erreur est survenue. Réessaie dans quelques secondes.</div>
     </div>
 
@@ -334,55 +401,135 @@
 </div>
 
 <script>
-async function sendMessage() {
-  const name    = document.getElementById('name').value.trim();
-  const message = document.getElementById('message').value.trim();
-  const btn     = document.getElementById('sendBtn');
-  const errorEl = document.getElementById('errorMsg');
+  const COOLDOWN_MS = 60_000;
+  const WEBHOOK_URL = 'https://hook.eu1.make.com/67qda18bhfcsyad25guqidwycxc6flp5';
 
-  errorEl.style.display = 'none';
+  /* Compteurs de caractères */
+  document.getElementById('name').addEventListener('input', function () {
+    const count = this.value.length;
+    const el = document.getElementById('nameCount');
+    el.textContent = count + ' / 100';
+    el.classList.toggle('warn', count > 80);
+  });
 
-  if (!message) {
-    document.getElementById('message').focus();
-    document.getElementById('message').style.borderColor = 'var(--accent2)';
-    setTimeout(() => document.getElementById('message').style.borderColor = '', 1200);
-    return;
+  document.getElementById('message').addEventListener('input', function () {
+    const count = this.value.length;
+    const el = document.getElementById('msgCount');
+    el.textContent = count + ' / 2000';
+    el.classList.toggle('warn', count > 1800);
+  });
+
+  /* Rate limiting côté client */
+  function getRemainingCooldown() {
+    const last = parseInt(localStorage.getItem('ia_last_send') || '0', 10);
+    const elapsed = Date.now() - last;
+    return Math.max(0, COOLDOWN_MS - elapsed);
   }
 
-  btn.disabled = true;
-  btn.classList.add('loading');
+  function startCooldownUI(durationMs) {
+    const btn          = document.getElementById('sendBtn');
+    const bar          = document.getElementById('cooldownBar');
+    const progress     = document.getElementById('cooldownProgress');
+    const label        = document.getElementById('cooldownLabel');
+    const totalSec     = Math.ceil(durationMs / 1000);
 
-  const payload = {
-    message: name ? `De ${name} : ${message}` : message,
-    name: name || 'Anonyme',
-    source: 'formulaire-web',
-    timestamp: new Date().toISOString()
-  };
+    btn.disabled = true;
+    bar.classList.add('active');
+    label.classList.add('active');
+    progress.style.width = '100%';
 
-  try {
-    await fetch('https://hook.eu1.make.com/67qda18bhfcsyad25guqidwycxc6flp5', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      mode: 'no-cors'
-    });
+    let remaining = totalSec;
+    label.textContent = `Prochain envoi possible dans ${remaining}s`;
 
-    document.getElementById('form-area').style.display = 'none';
-    document.getElementById('successMsg').style.display = 'block';
+    const tick = setInterval(() => {
+      remaining--;
+      const pct = (remaining / totalSec) * 100;
+      progress.style.width = pct + '%';
+      label.textContent = remaining > 0
+        ? `Prochain envoi possible dans ${remaining}s`
+        : '';
 
-  } catch (e) {
-    btn.disabled = false;
-    btn.classList.remove('loading');
-    errorEl.style.display = 'block';
+      if (remaining <= 0) {
+        clearInterval(tick);
+        btn.disabled = false;
+        bar.classList.remove('active');
+        label.classList.remove('active');
+      }
+    }, 1000);
   }
-}
 
-// Enter to submit (Shift+Enter = new line)
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !e.shiftKey && document.activeElement.id !== 'message') {
-    sendMessage();
+  /* Envoi */
+  async function sendMessage() {
+    const nameEl    = document.getElementById('name');
+    const msgEl     = document.getElementById('message');
+    const honeypot  = document.getElementById('website').value;
+    const btn       = document.getElementById('sendBtn');
+    const errorEl   = document.getElementById('errorMsg');
+
+    errorEl.style.display = 'none';
+
+    /* Honeypot : si rempli → bot détecté, on abandonne silencieusement */
+    if (honeypot) return;
+
+    const name    = nameEl.value.trim().slice(0, 100);
+    const message = msgEl.value.trim().slice(0, 2000);
+
+    if (!message) {
+      msgEl.focus();
+      msgEl.style.borderColor = 'var(--accent2)';
+      setTimeout(() => { msgEl.style.borderColor = ''; }, 1200);
+      return;
+    }
+
+    /* Rate limiting */
+    const remaining = getRemainingCooldown();
+    if (remaining > 0) {
+      startCooldownUI(remaining);
+      return;
+    }
+
+    btn.disabled = true;
+    btn.classList.add('loading');
+
+    const payload = {
+      message: name ? `De ${name} : ${message}` : message,
+      name: name || 'Anonyme',
+      source: 'formulaire-web',
+      timestamp: new Date().toISOString(),
+    };
+
+    try {
+      await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        mode: 'no-cors',
+      });
+
+      localStorage.setItem('ia_last_send', String(Date.now()));
+
+      document.getElementById('form-area').style.display = 'none';
+      document.getElementById('successMsg').style.display = 'block';
+
+    } catch (e) {
+      btn.disabled = false;
+      btn.classList.remove('loading');
+      errorEl.style.display = 'block';
+    }
   }
-});
+
+  /* Bloquer si cooldown déjà actif au chargement de la page */
+  (function () {
+    const rem = getRemainingCooldown();
+    if (rem > 0) startCooldownUI(rem);
+  })();
+
+  /* Enter pour envoyer (Shift+Enter = nouvelle ligne) */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey && document.activeElement.id !== 'message') {
+      sendMessage();
+    }
+  });
 </script>
 </body>
 </html>
